@@ -1,3 +1,5 @@
+import 'newrelic'; // Importar primeiro
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
