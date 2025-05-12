@@ -5,6 +5,11 @@ import { UsersModule } from './users/users.module';
 import { LoggerModule } from 'nestjs-pino';
 import { TraceMiddleware } from './common/middleware/trace.middleware';
 import { getTraceId } from './common/utils/trace-context';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { AuthenticationModule } from './authentication/authentication.module';
+import { ClerkClientProvider } from './authentication/providers/clerk-client.provider';
+import { APP_GUARD } from '@nestjs/core';
+import { ClerkAuthGuard } from './authentication/clerk-auth.guard';
 
 @Module({
   imports: [
@@ -12,6 +17,7 @@ import { getTraceId } from './common/utils/trace-context';
       isGlobal: true, // Disponível globalmente sem precisar importar sempre
       envFilePath: ['.env'], // Carrega .env e .env.{NODE_ENV}
     }),
+    PrometheusModule.register(),
     LoggerModule.forRoot({
       pinoHttp: {
         transport: {
@@ -45,6 +51,14 @@ import { getTraceId } from './common/utils/trace-context';
     }),
     BigqueryModule,
     UsersModule,
+    AuthenticationModule,
+  ],
+  providers: [
+    ClerkClientProvider,
+    {
+      provide: APP_GUARD,
+      useClass: ClerkAuthGuard,
+    },
   ],
 })
 export class AppModule implements NestModule {
