@@ -17,4 +17,22 @@ export class SportMonksService {
     this.logger.log(`Getting fixtures for date: ${date}`);
     return this.fixturesRepository.findByDate(date);
   }
+
+  /**
+   * Busca fixtures por IDs
+   * @param ids Lista de IDs de fixtures separados por vírgula
+   * @param includes Dados adicionais a serem incluídos
+   * @returns Lista de fixtures
+   */
+  async getFixturesByIds(ids: string, includes?: string): Promise<Fixture[]> {
+    this.logger.log(`Getting fixtures by IDs: ${ids}`);
+    
+    // Converte a string de IDs em um array de números
+    const fixtureIds = ids.split(',').map(id => parseInt(id.trim(), 10));
+    
+    // Converte a string de includes para um array se existir
+    const includesArray = includes ? includes.split(';') : [];
+    
+    return this.fixturesRepository.findByIds(fixtureIds, includesArray);
+  }
 } 

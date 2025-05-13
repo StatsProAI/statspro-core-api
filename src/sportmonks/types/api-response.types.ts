@@ -1,3 +1,7 @@
+/**
+ * Tipos que representam a estrutura da resposta da API SportMonks
+ */
+
 export interface ApiLeague {
   id: number;
   sport_id: number;
@@ -11,6 +15,55 @@ export interface ApiLeague {
   last_played_at: string;
   category: number;
   has_jerseys: boolean;
+}
+
+export interface ApiParticipant {
+  id: number;
+  sport_id: number;
+  country_id: number;
+  venue_id: number;
+  gender: string;
+  name: string;
+  short_code: string;
+  image_path: string;
+  founded: number | null;
+  type: string;
+  placeholder: boolean;
+  last_played_at: string;
+  meta: {
+    location: string;
+    winner: boolean | null;
+    position: number;
+  };
+}
+
+export interface ApiLineup {
+  id: number;
+  sport_id: number;
+  fixture_id: number;
+  player_id: number;
+  team_id: number;
+  position_id: number;
+  formation_field: string;
+  type_id: number;
+  formation_position: number;
+  player_name: string;
+  jersey_number: number;
+}
+
+export interface ApiTvStation {
+  id: number;
+  fixture_id: number;
+  tvstation_id: number;
+  country_id: number;
+}
+
+export interface ApiFormation {
+  id: number;
+  fixture_id: number;
+  participant_id: number;
+  formation: string;
+  location: string;
 }
 
 export interface ApiFixture {
@@ -34,7 +87,15 @@ export interface ApiFixture {
   has_odds: boolean;
   has_premium_odds: boolean;
   starting_at_timestamp: number;
-  league: ApiLeague;
+  league?: ApiLeague;
+  participants?: ApiParticipant[];
+  statistics?: any[];
+  timeline?: any[];
+  events?: any[];
+  lineups?: ApiLineup[];
+  tvStations?: ApiTvStation[];
+  scores?: any[];
+  formations?: ApiFormation[];
 }
 
 export interface ApiPaginationMeta {
