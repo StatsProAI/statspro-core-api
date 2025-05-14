@@ -16,16 +16,19 @@ jobs:
       - name: Instalar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # ou a versão que você estiver usando
+          node-version: '20'
+
+      - name: Instalar Yarn
+        run: corepack enable && corepack prepare yarn@stable --activate
 
       - name: Instalar dependências
-        run: npm ci
+        run: yarn install --frozen-lockfile
 
       - name: Rodar Lint
-        run: npm run lint
+        run: yarn lint
 
       - name: Rodar Build
-        run: npm run build
+        run: yarn build
 
       - name: Rodar Testes
-        run: npm run test
+        run: yarn test
