@@ -6,6 +6,7 @@ import { Public } from '../authentication/decorators/public.decorator';
 
 @ApiTags('sportmonks')
 @Controller('sportmonks')
+@Public()
 export class SportMonksController {
   private readonly logger = new Logger(SportMonksController.name);
   

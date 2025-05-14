@@ -1,72 +1,25 @@
 import { Injectable, Logger } from '@nestjs/common';
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ApiFixtureResponse, ApiFixture } from '../types/api-response.types';
 import { SportMonksConfig } from '../config/sportmonks.config';
 import { Fixture } from '../dto/fixture.dto';
+import { HttpClient } from '../../common/utils/http-client.utils';
+import { normalizeApiResponse } from '../utils/api-response.utils';
 
 @Injectable()
 export class SportMonksApiRepository {
   private readonly logger = new Logger(SportMonksApiRepository.name);
-  private readonly httpClient: AxiosInstance;
+  private readonly httpClient: HttpClient;
 
   constructor(private readonly config: SportMonksConfig) {
     if (!this.config.apiToken) {
       this.logger.warn('SPORTMONKS_API_TOKEN not defined in environment variables!');
     }
 
-    this.httpClient = axios.create({
-      baseURL: this.config.baseUrl,
-      timeout: this.config.timeout,
-    });
-  }
-
-  /**
-   * Executa uma chamada GET para a API SportMonks
-   * @param endpoint Endpoint a ser chamado
-   * @param params Parâmetros adicionais para a requisição
-   * @returns Resposta da API
-   */
-  private async get<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
-    try {
-      const config: AxiosRequestConfig = {
-        params: {
-          api_token: this.config.apiToken,
-          ...params,
-        },
-      };
-
-      this.logger.debug(`Making API request to ${endpoint}`);
-      const response = await this.httpClient.get<T>(endpoint, config);
-      return response.data;
-    } catch (error) {
-      this.logger.error(
-        `API call failed: ${error.message}`, 
-        error.response?.data ? JSON.stringify(error.response.data) : error.stack
-      );
-      throw error;
-    }
-  }
-
-  /**
-   * Padroniza a resposta da API para um formato consistente
-   */
-  private normalizeResponse<T>(data: any): ApiFixtureResponse {
-    const normalizedData = Array.isArray(data) 
-      ? data 
-      : (data && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) 
-        ? data.data 
-        : [data];
-
-    return {
-      data: normalizedData,
-      pagination: {
-        count: normalizedData.length,
-        per_page: normalizedData.length,
-        current_page: 1,
-        next_page: null,
-        has_more: false,
-      },
-    };
+    this.httpClient = new HttpClient(
+      this.config.baseUrl, 
+      this.config.timeout,
+      { api_token: this.config.apiToken }
+    );
   }
 
   /**
@@ -125,7 +78,7 @@ export class SportMonksApiRepository {
     let allData = [];
 
     while (hasMore) {
-      const response = await this.get<ApiFixtureResponse>(endpoint, {
+      const response = await this.httpClient.get<ApiFixtureResponse>(endpoint, {
         include: includes,
         page: currentPage,
       });
@@ -139,7 +92,7 @@ export class SportMonksApiRepository {
       );
     }
 
-    return this.normalizeResponse(allData);
+    return normalizeApiResponse(allData);
   }
 
   /**
@@ -158,12 +111,12 @@ export class SportMonksApiRepository {
     const includesParam = includes.length ? includes.join(';') : '';
     
     try {
-      const response = await this.get<any>(endpoint, {
+      const response = await this.httpClient.get<any>(endpoint, {
         include: includesParam,
       });
       
       this.logger.log(`Successfully fetched fixtures by IDs`);
-      return this.normalizeResponse(response);
+      return normalizeApiResponse(response);
     } catch (error) {
       this.logger.error(`Failed to fetch fixtures by IDs: ${error.message}`, error.stack);
       throw error;
