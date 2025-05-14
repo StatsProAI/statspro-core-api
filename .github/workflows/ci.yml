@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build-test-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar Yarn
+        run: corepack enable && corepack prepare yarn@stable --activate
+
+      - name: Instalar dependências
+        run: yarn install --immutable --immutable-cache
+
+      - name: Rodar Lint
+        run: yarn lint
+
+      - name: Rodar Build
+        run: yarn build
+
+      # - name: Rodar Testes
+      #   run: yarn test

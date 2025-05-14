@@ -109,4 +109,4 @@ export interface ApiPaginationMeta {
 export interface ApiFixtureResponse {
   data: ApiFixture[];
   pagination: ApiPaginationMeta;
-} 
+}

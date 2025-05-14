@@ -19,7 +19,10 @@ export class SportMonksConfig {
    * URL base da API SportMonks
    */
   get baseUrl(): string {
-    return this.configService.get<string>('SPORTMONKS_BASE_URL', 'https://api.sportmonks.com/v3');
+    return this.configService.get<string>(
+      'SPORTMONKS_BASE_URL',
+      'https://api.sportmonks.com/v3',
+    );
   }
 
   /**
@@ -28,4 +31,4 @@ export class SportMonksConfig {
   get timeout(): number {
     return this.configService.get<number>('SPORTMONKS_TIMEOUT', 10000);
   }
-} 
+}

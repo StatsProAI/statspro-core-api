@@ -16,14 +16,14 @@ declare global {
 export class TraceMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const traceId = uuidv4();
-    
+
     // Adiciona o traceId ao objeto request e headers
     req.traceId = traceId;
     req.headers['x-trace-id'] = traceId;
-    
+
     // Executa o resto da requisição com o traceId no contexto
     asyncLocalStorage.run({ traceId }, () => {
       next();
     });
   }
-} 
+}

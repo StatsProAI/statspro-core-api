@@ -17,4 +17,4 @@ export class ClerkUserService {
   async getUser(userId: string) {
     return this.clerkClient.users.getUser(userId);
   }
-}   
+}

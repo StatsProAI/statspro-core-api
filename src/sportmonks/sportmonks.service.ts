@@ -26,13 +26,18 @@ export class SportMonksService {
    */
   async getFixturesByIds(ids: string, includes?: string): Promise<Fixture[]> {
     this.logger.log(`Getting fixtures by IDs: ${ids}`);
-    
+
     // Converte a string de IDs em um array de números
-    const fixtureIds = ids.split(',').map(id => parseInt(id.trim(), 10));
-    
+    const fixtureIds = ids.split(',').map((id) => parseInt(id.trim(), 10));
+
     // Converte a string de includes para um array se existir
     const includesArray = includes ? includes.split(';') : [];
+<<<<<<< HEAD
     
     return this.sportmonksRepository.findByIds(fixtureIds, includesArray);
+=======
+
+    return this.fixturesRepository.findByIds(fixtureIds, includesArray);
+>>>>>>> origin/develop
   }
-} 
+}

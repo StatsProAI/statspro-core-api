@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { BigQuery } from '@google-cloud/bigquery';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { BigqueryService } from './bigquery.service';
 
 @Global()
@@ -10,7 +10,8 @@ import { BigqueryService } from './bigquery.service';
       provide: BigQuery,
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const credentialsString = configService.get<string>('GOOGLE_CREDENTIALS');
+        const credentialsString =
+          configService.get<string>('GOOGLE_CREDENTIALS');
         const credentials = JSON.parse(credentialsString);
         return new BigQuery({
           credentials,
@@ -18,7 +19,7 @@ import { BigqueryService } from './bigquery.service';
         });
       },
     },
-    BigqueryService
+    BigqueryService,
   ],
   exports: [BigQuery, BigqueryService],
 })

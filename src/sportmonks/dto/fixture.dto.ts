@@ -85,4 +85,3 @@ export interface Fixture {
   scores?: any[];
   formations?: Formation[];
 }
-
