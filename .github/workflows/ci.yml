@@ -22,7 +22,7 @@ jobs:
         run: corepack enable && corepack prepare yarn@stable --activate
 
       - name: Instalar dependências
-        run: yarn install --immutable --immutable-cache
+        run: yarn install
 
       - name: Rodar Lint
         run: yarn lint
