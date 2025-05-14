@@ -16,16 +16,21 @@ export class FixturesRepository {
    */
   async findByDate(date: string): Promise<Fixture[]> {
     this.logger.log(`Finding fixtures for date: ${date}`);
-    
+
     try {
       const response = await this.apiClient.getFixturesByDate(date);
-      
-      const fixtures = response.data.map(fixture => this.mapToSimpleFixture(fixture));
-      
+
+      const fixtures = response.data.map((fixture) =>
+        this.mapToSimpleFixture(fixture),
+      );
+
       this.logger.log(`Found ${fixtures.length} fixtures for date: ${date}`);
       return fixtures;
     } catch (error) {
-      this.logger.error(`Failed to find fixtures: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to find fixtures: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
@@ -38,16 +43,21 @@ export class FixturesRepository {
    */
   async findByIds(ids: number[], includes: string[] = []): Promise<Fixture[]> {
     this.logger.log(`Finding fixtures with IDs: ${ids.join(', ')}`);
-    
+
     try {
       const response = await this.apiClient.getFixturesByIds(ids, includes);
-      
-      const fixtures = response.data.map(fixture => this.mapToDetailedFixture(fixture));
-      
+
+      const fixtures = response.data.map((fixture) =>
+        this.mapToDetailedFixture(fixture),
+      );
+
       this.logger.log(`Found ${fixtures.length} fixtures by IDs`);
       return fixtures;
     } catch (error) {
-      this.logger.error(`Failed to find fixtures by IDs: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to find fixtures by IDs: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
@@ -60,17 +70,17 @@ export class FixturesRepository {
       this.logger.warn('Received undefined fixture from API');
       return null;
     }
-    
+
     return {
       id: apiFixture.id,
-      league: apiFixture.league 
+      league: apiFixture.league
         ? {
             id: apiFixture.league.id,
             name: apiFixture.league.name,
             country_id: apiFixture.league.country_id,
             image_path: apiFixture.league.image_path,
           }
-        : null
+        : null,
     };
   }
 
@@ -82,7 +92,7 @@ export class FixturesRepository {
       this.logger.warn('Received undefined fixture from API');
       return null;
     }
-    
+
     const fixture: Fixture = {
       id: apiFixture.id,
       sport_id: apiFixture.sport_id,
@@ -111,9 +121,9 @@ export class FixturesRepository {
       lineups: apiFixture.lineups,
       tvStations: apiFixture.tvStations,
       scores: apiFixture.scores,
-      formations: apiFixture.formations
+      formations: apiFixture.formations,
     };
-    
+
     if (apiFixture.league) {
       fixture.league = {
         id: apiFixture.league.id,
@@ -122,7 +132,7 @@ export class FixturesRepository {
         image_path: apiFixture.league.image_path,
       };
     }
-    
+
     return fixture;
   }
-} 
+}

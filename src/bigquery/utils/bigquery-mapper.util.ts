@@ -17,5 +17,5 @@ export function mapBigQueryRow<T>(row: Record<string, any>): T {
 }
 
 export function mapBigQueryRows<T>(rows: Record<string, any>[]): T[] {
-  return rows.map(row => mapBigQueryRow<T>(row));
+  return rows.map((row) => mapBigQueryRow<T>(row));
 }

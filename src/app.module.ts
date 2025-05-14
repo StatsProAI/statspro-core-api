@@ -11,6 +11,8 @@ import { ClerkClientProvider } from './authentication/providers/clerk-client.pro
 import { APP_GUARD } from '@nestjs/core';
 import { ClerkAuthGuard } from './authentication/clerk-auth.guard';
 import { SportMonksModule } from './sportmonks/sportmonks.module';
+import { TwilioModule } from './twilio/twilio.module';
+import { WhatsappTwilioSessionModule } from './whatsapp-twilio-session/whatsapp-twilio-session.module';
 
 @Module({
   imports: [
@@ -54,6 +56,8 @@ import { SportMonksModule } from './sportmonks/sportmonks.module';
     UsersModule,
     AuthenticationModule,
     SportMonksModule,
+    TwilioModule,
+    WhatsappTwilioSessionModule,
   ],
   providers: [
     ClerkClientProvider,
@@ -65,8 +69,6 @@ import { SportMonksModule } from './sportmonks/sportmonks.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(TraceMiddleware)
-      .forRoutes('*');
+    consumer.apply(TraceMiddleware).forRoutes('*');
   }
 }

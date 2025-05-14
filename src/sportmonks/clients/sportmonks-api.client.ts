@@ -10,7 +10,9 @@ export class SportMonksApiClient {
 
   constructor(private readonly config: SportMonksConfig) {
     if (!this.config.apiToken) {
-      this.logger.warn('SPORTMONKS_API_TOKEN not defined in environment variables!');
+      this.logger.warn(
+        'SPORTMONKS_API_TOKEN not defined in environment variables!',
+      );
     }
 
     this.httpClient = axios.create({
@@ -25,7 +27,10 @@ export class SportMonksApiClient {
    * @param params Parâmetros adicionais para a requisição
    * @returns Resposta da API
    */
-  private async get<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
+  private async get<T>(
+    endpoint: string,
+    params?: Record<string, any>,
+  ): Promise<T> {
     try {
       const config: AxiosRequestConfig = {
         params: {
@@ -39,8 +44,10 @@ export class SportMonksApiClient {
       return response.data;
     } catch (error) {
       this.logger.error(
-        `API call failed: ${error.message}`, 
-        error.response?.data ? JSON.stringify(error.response.data) : error.stack
+        `API call failed: ${error.message}`,
+        error.response?.data
+          ? JSON.stringify(error.response.data)
+          : error.stack,
       );
       throw error;
     }
@@ -49,11 +56,14 @@ export class SportMonksApiClient {
   /**
    * Padroniza a resposta da API para um formato consistente
    */
-  private normalizeResponse<T>(data: any): ApiFixtureResponse {
-    const normalizedData = Array.isArray(data) 
-      ? data 
-      : (data && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) 
-        ? data.data 
+  private normalizeResponse(data: any): ApiFixtureResponse {
+    const normalizedData = Array.isArray(data)
+      ? data
+      : data &&
+          typeof data === 'object' &&
+          'data' in data &&
+          Array.isArray(data.data)
+        ? data.data
         : [data];
 
     return {
@@ -74,7 +84,10 @@ export class SportMonksApiClient {
    * @param includes Dados adicionais a serem incluídos
    * @returns Todas as fixtures da data especificada
    */
-  async getFixturesByDate(date: string, includes: string = 'league'): Promise<ApiFixtureResponse> {
+  async getFixturesByDate(
+    date: string,
+    includes: string = 'league',
+  ): Promise<ApiFixtureResponse> {
     const endpoint = `/football/fixtures/date/${date}`;
     let currentPage = 1;
     let hasMore = true;
@@ -105,24 +118,27 @@ export class SportMonksApiClient {
    * @returns Fixtures correspondentes aos IDs
    */
   async getFixturesByIds(
-    fixtureIds: number[], 
-    includes: string[] = []
+    fixtureIds: number[],
+    includes: string[] = [],
   ): Promise<ApiFixtureResponse> {
     this.logger.log(`Fetching fixtures with IDs: ${fixtureIds.join(',')}`);
-    
+
     const endpoint = `/football/fixtures/multi/${fixtureIds.join(',')}`;
     const includesParam = includes.length ? includes.join(';') : '';
-    
+
     try {
       const response = await this.get<any>(endpoint, {
         include: includesParam,
       });
-      
+
       this.logger.log(`Successfully fetched fixtures by IDs`);
       return this.normalizeResponse(response);
     } catch (error) {
-      this.logger.error(`Failed to fetch fixtures by IDs: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to fetch fixtures by IDs: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
-} 
+}
