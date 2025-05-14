@@ -30,6 +30,10 @@ export class BigQueryRepository<T> {
     this.datasetId = process.env.BIGQUERY_DATASET_ID;
   }
 
+  async insert(entity: T): Promise<void> {
+  }
+
+
   async findAll(queryOptions: QueryOptions): Promise<T[]> {
     let fiels = '';
 
