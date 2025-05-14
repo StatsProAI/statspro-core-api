@@ -10,6 +10,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { ClerkClientProvider } from './authentication/providers/clerk-client.provider';
 import { APP_GUARD } from '@nestjs/core';
 import { ClerkAuthGuard } from './authentication/clerk-auth.guard';
+import { SportMonksModule } from './sportmonks/sportmonks.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { ClerkAuthGuard } from './authentication/clerk-auth.guard';
     BigqueryModule,
     UsersModule,
     AuthenticationModule,
+    SportMonksModule,
   ],
   providers: [
     ClerkClientProvider,
