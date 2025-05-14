@@ -1,12 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Fixture } from './dto/fixture.dto';
-import { FixturesRepository } from './repositories/fixtures.repository';
+import { SportMonksApiRepository } from './repositories/sportmonks-api.repository';
 
 @Injectable()
 export class SportMonksService {
   private readonly logger = new Logger(SportMonksService.name);
 
-  constructor(private readonly fixturesRepository: FixturesRepository) {}
+  constructor(private readonly sportmonksRepository: SportMonksApiRepository) {}
 
   /**
    * Busca fixtures por data
@@ -15,7 +15,7 @@ export class SportMonksService {
    */
   async getFixturesByDate(date: string): Promise<Fixture[]> {
     this.logger.log(`Getting fixtures for date: ${date}`);
-    return this.fixturesRepository.findByDate(date);
+    return this.sportmonksRepository.findByDate(date);
   }
 
   /**
@@ -33,6 +33,6 @@ export class SportMonksService {
     // Converte a string de includes para um array se existir
     const includesArray = includes ? includes.split(';') : [];
     
-    return this.fixturesRepository.findByIds(fixtureIds, includesArray);
+    return this.sportmonksRepository.findByIds(fixtureIds, includesArray);
   }
 } 
