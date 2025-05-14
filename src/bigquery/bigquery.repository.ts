@@ -31,8 +31,8 @@ export class BigQueryRepository<T> {
   }
 
   async insert(entity: T): Promise<void> {
+    console.log('Inserting entity:', entity);
   }
-
 
   async findAll(queryOptions: QueryOptions): Promise<T[]> {
     let fiels = '';
