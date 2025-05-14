@@ -2,7 +2,6 @@ import { Controller, Get } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CurrentUser } from '../authentication/decorators/current-user.decorator';
 import { User } from '@clerk/backend';
-import { Public } from '../authentication/decorators/public.decorator';
 
 @Controller('users')
 export class UsersController {

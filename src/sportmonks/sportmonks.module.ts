@@ -17,4 +17,4 @@ import { SportMonksConfig } from './config/sportmonks.config';
   ],
   exports: [SportMonksService],
 })
-export class SportMonksModule {} 
+export class SportMonksModule {}
