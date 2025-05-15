@@ -8,9 +8,11 @@ import {
 } from '@nestjs/swagger';
 import { SportMonksService } from './sportmonks.service';
 import { Fixture } from './dto/fixture.dto';
+import { Public } from 'src/authentication/decorators/public.decorator';
 
 @ApiTags('sportmonks')
 @Controller('sportmonks')
+@Public()
 export class SportMonksController {
   private readonly logger = new Logger(SportMonksController.name);
 
