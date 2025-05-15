@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { ApiFixture } from './api-response.types';
+import { ApiFixture, ApiFixtureResponse } from './api-response.types';
 import { Fixture } from './fixture.dto';
 
 /**
@@ -7,6 +7,32 @@ import { Fixture } from './fixture.dto';
  */
 export class FixtureMapper {
   private static readonly logger = new Logger(FixtureMapper.name);
+
+
+  /**
+   * Padroniza a resposta da API para um formato consistente
+   */
+  static normalizeResponse(data: any): ApiFixtureResponse {
+    const normalizedData = Array.isArray(data)
+      ? data
+      : data &&
+        typeof data === 'object' &&
+        'data' in data &&
+        Array.isArray(data.data)
+        ? data.data
+        : [data];
+
+    return {
+      data: normalizedData,
+      pagination: {
+        count: normalizedData.length,
+        per_page: normalizedData.length,
+        current_page: 1,
+        next_page: null,
+        has_more: false,
+      },
+    };
+  }
 
   /**
    * Mapeia uma fixture da API para um objeto simplificado

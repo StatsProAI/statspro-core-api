@@ -87,7 +87,7 @@ export class SportMonksService {
       );
     }
 
-    return this.normalizeResponse(allData);
+    return FixtureMapper.normalizeResponse(allData);
   }
 
   /**
@@ -109,7 +109,7 @@ export class SportMonksService {
       });
 
       this.logger.log(`Successfully fetched fixtures by IDs`);
-      return this.normalizeResponse(response);
+      return FixtureMapper.normalizeResponse(response);
     } catch (error) {
       this.logger.error(
         `Failed to fetch fixtures by IDs: ${error.message}`,
