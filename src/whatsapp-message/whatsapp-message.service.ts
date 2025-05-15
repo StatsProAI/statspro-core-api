@@ -10,7 +10,7 @@ export class WhatsappMessageService {
   }
 
   async sendFirstMessage(to: string, message: string): Promise<any> {
-    await this.whatsappTwilioSessionService.createSession();
+    await this.whatsappTwilioSessionService.createSession('');
     // Simulate sending a message
     console.log(`Sending message to ${to}: ${message}`);
     return { status: 'success', message: 'Message sent successfully' };
