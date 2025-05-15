@@ -8,7 +8,6 @@ import {
 } from '@nestjs/swagger';
 import { SportMonksService } from './sportmonks.service';
 import { Fixture } from './fixture.dto';
-import { Public } from 'src/authentication/decorators/public.decorator';
 
 @ApiTags('sportmonks')
 @Controller('sportmonks')
