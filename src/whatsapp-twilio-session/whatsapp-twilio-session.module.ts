@@ -19,5 +19,6 @@ import { ConfigService } from '@nestjs/config';
       inject: [BigQuery, ConfigService],
     },
   ],
+  exports: [WhatsappTwilioSessionService],
 })
 export class WhatsappTwilioSessionModule {}
