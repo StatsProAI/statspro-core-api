@@ -9,8 +9,10 @@ export class WhatsappTwilioSessionService {
     private readonly repository: BigQueryRepository<WhatsAppTwilioSessionEntity>,
   ) {}
 
-  async createSession() {
+  async createSession(userId: string): Promise<void> {
     const session = new WhatsAppTwilioSessionEntity();
-    await this.repository.insert(session);
+    session.userId = userId;
+    session.createdAt = new Date();
+    (session.status = 'INITIALIZED'), await this.repository.insert(session);
   }
 }

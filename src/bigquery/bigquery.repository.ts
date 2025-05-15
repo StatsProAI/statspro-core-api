@@ -31,10 +31,41 @@ export class BigQueryRepository<T> {
   }
 
   async insert(entity: T): Promise<void> {
-    console.log('Inserting entity:', entity);
+    const sql = `INSERT INTO \`${this.projectId}.${this.datasetId}.${this.tableName}\` (${this.columns
+      .map((c) => `\`${c.columnName}\``)
+      .join(', ')}) VALUES (${this.columns
+      .map((c) => `@${c.propertyKey}`)
+      .join(', ')})`;
+
+    const params = this.columns.reduce((acc, column) => {
+      acc[column.propertyKey] = (entity as any)[column.propertyKey];
+      return acc;
+    }, {});
+
+    const options = {
+      query: sql,
+      params,
+      useLegacySql: false,
+    };
+    const startTime = Date.now();
+    try {
+      console.log('BigQuery Insert - SQL:', options);
+
+      // await this.bigQuery.query(options);
+      // const duration = Date.now() - startTime;
+      // this.logger.log(
+      //   `BigQuery Insert - ${duration}ms - TraceId: ${getTraceId()} - SQL: ${sql} - Table: ${this.tableName}`,
+      // );
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      this.logger.error(
+        `Error executing query - ${duration}ms - TraceId: ${getTraceId()} - SQL: ${sql} - Table: ${this.tableName} - Error: ${error.stack}`,
+      );
+      throw error;
+    }
   }
 
-  async findAll(queryOptions: QueryOptions): Promise<T[]> {
+  async findAll(queryOptions?: QueryOptions): Promise<T[]> {
     let fiels = '';
 
     if (queryOptions.fields && queryOptions.fields.length > 0) {
