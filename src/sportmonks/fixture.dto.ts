@@ -1,80 +1,44 @@
-export interface League {
-  id: number;
-  name: string;
-  country_id: number;
-  image_path: string;
-}
+import { 
+  ApiLeague, 
+  ApiParticipant, 
+  ApiLineup, 
+  ApiTvStation, 
+  ApiFormation,
+  ApiFixture
+} from './api-response.types';
 
-export interface Participant {
-  id: number;
-  sport_id: number;
-  country_id: number;
-  venue_id: number;
-  gender: string;
-  name: string;
-  short_code: string;
-  image_path: string;
-  founded: number | null;
-  type: string;
-  placeholder: boolean;
-  last_played_at: string;
-  meta: {
-    location: string;
-    winner: boolean | null;
-    position: number;
-  };
-}
+// Definir apenas o que é diferente ou o que precisa ser exposto
+export interface League extends Pick<ApiLeague, 'id' | 'name' | 'country_id' | 'image_path'> {}
 
-export interface Lineup {
-  id: number;
-  sport_id: number;
-  fixture_id: number;
-  player_id: number;
-  team_id: number;
-  position_id: number;
-  formation_field: string;
-  type_id: number;
-  formation_position: number;
-  player_name: string;
-  jersey_number: number;
-}
+export interface Participant extends ApiParticipant {}
 
-export interface TvStation {
-  id: number;
-  fixture_id: number;
-  tvstation_id: number;
-  country_id: number;
-}
+export interface Lineup extends ApiLineup {}
 
-export interface Formation {
-  id: number;
-  fixture_id: number;
-  participant_id: number;
-  formation: string;
-  location: string;
-}
+export interface TvStation extends ApiTvStation {}
+
+export interface Formation extends ApiFormation {}
 
 export interface Fixture {
   id: number;
-  sport_id?: number;
-  league_id?: number;
-  season_id?: number;
-  stage_id?: number;
-  group_id?: number | null;
-  aggregate_id?: number | null;
-  round_id?: number | null;
-  state_id?: number;
-  venue_id?: number;
-  name?: string;
-  starting_at?: string;
-  result_info?: any | null;
-  leg?: string;
-  details?: any | null;
-  length?: number;
-  placeholder?: boolean;
-  has_odds?: boolean;
-  has_premium_odds?: boolean;
-  starting_at_timestamp?: number;
+  sport_id?: ApiFixture['sport_id'];
+  league_id?: ApiFixture['league_id'];
+  season_id?: ApiFixture['season_id'];
+  stage_id?: ApiFixture['stage_id'];
+  group_id?: ApiFixture['group_id'];
+  aggregate_id?: ApiFixture['aggregate_id'];
+  round_id?: ApiFixture['round_id'];
+  state_id?: ApiFixture['state_id'];
+  venue_id?: ApiFixture['venue_id'];
+  name?: ApiFixture['name'];
+  starting_at?: ApiFixture['starting_at'];
+  result_info?: ApiFixture['result_info'];
+  leg?: ApiFixture['leg'];
+  details?: ApiFixture['details'];
+  length?: ApiFixture['length'];
+  placeholder?: ApiFixture['placeholder'];
+  has_odds?: ApiFixture['has_odds'];
+  has_premium_odds?: ApiFixture['has_premium_odds'];
+  starting_at_timestamp?: ApiFixture['starting_at_timestamp'];
   league?: League;
   participants?: Participant[];
   statistics?: any[];

@@ -12,7 +12,6 @@ export class SportMonksRepository {
     private readonly httpService: HttpService,
     private readonly config: SportMonksConfig,
   ) {
-    // Configura o httpService usando a classe de configuração dedicada
     this.httpService.configure(this.config.baseUrl, this.config.timeout);
   }
 
@@ -28,26 +27,35 @@ export class SportMonksRepository {
     let hasMore = true;
     let allData = [];
 
-    while (hasMore) {
-      const response = await this.httpService.get<ApiFixtureResponse>(
-        endpoint,
-        {
-          include: includes,
-          page: currentPage,
-          api_token: this.config.apiToken,
-        },
-      );
+    try {
+      while (hasMore) {
+        const response = await this.httpService.get<ApiFixtureResponse>(
+          endpoint,
+          {
+            include: includes,
+            page: currentPage,
+            api_token: this.config.apiToken,
+          },
+        );
 
-      allData = [...allData, ...response.data];
-      hasMore = response.pagination.has_more;
-      currentPage++;
+        allData = [...allData, ...response.data];
+        hasMore = response.pagination.has_more;
+        currentPage++;
 
-      this.logger.debug(
-        `Fetched page ${response.pagination.current_page} of fixtures. Total fixtures so far: ${allData.length}`,
+        this.logger.debug(
+          `Fetched page ${response.pagination.current_page} of fixtures. Total fixtures so far: ${allData.length}`,
+        );
+      }
+
+      this.logger.log(`Successfully fetched fixtures for date: ${date}`);
+      return FixtureMapper.normalizeResponse(allData);
+    } catch (error) {
+      this.logger.error(
+        `Failed to fetch fixtures by date ${date}: ${error.message}`,
+        error.stack,
       );
+      throw error;
     }
-
-    return FixtureMapper.normalizeResponse(allData);
   }
 
   /**
