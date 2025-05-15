@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '../common/http/http.service';
-import { Fixture } from './dto/fixture.dto';
-import { ApiFixture, ApiFixtureResponse } from './types/api-response.types';
+import { Fixture } from './fixture.dto';
+import { ApiFixture, ApiFixtureResponse } from './api-response.types';
 
 @Injectable()
 export class SportMonksService {
