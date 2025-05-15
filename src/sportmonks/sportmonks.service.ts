@@ -1,15 +1,17 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { HttpService } from '../common/http/http.service';
 import { Fixture } from './dto/fixture.dto';
 import { ApiFixture, ApiFixtureResponse } from './types/api-response.types';
 
 @Injectable()
 export class SportMonksService {
   private readonly logger = new Logger(SportMonksService.name);
-  private readonly httpClient: AxiosInstance;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly httpService: HttpService,
+  ) {
     const apiToken = this.configService.get<string>('SPORTMONKS_API_TOKEN');
 
     if (!apiToken) {
@@ -18,45 +20,14 @@ export class SportMonksService {
       );
     }
 
-    this.httpClient = axios.create({
-      baseURL: this.configService.get<string>(
-        'SPORTMONKS_BASE_URL',
-        'https://api.sportmonks.com/v3',
-      ),
-      timeout: this.configService.get<number>('SPORTMONKS_TIMEOUT', 10000),
-    });
-  }
+    const baseURL = this.configService.get<string>(
+      'SPORTMONKS_BASE_URL',
+      'https://api.sportmonks.com/v3',
+    );
+    const timeout = this.configService.get<number>('SPORTMONKS_TIMEOUT', 10000);
 
-  /**
-   * Executa uma chamada GET para a API SportMonks
-   * @param endpoint Endpoint a ser chamado
-   * @param params Parâmetros adicionais para a requisição
-   * @returns Resposta da API
-   */
-  private async get<T>(
-    endpoint: string,
-    params?: Record<string, any>,
-  ): Promise<T> {
-    try {
-      const config: AxiosRequestConfig = {
-        params: {
-          api_token: this.configService.get<string>('SPORTMONKS_API_TOKEN'),
-          ...params,
-        },
-      };
-
-      this.logger.debug(`Making API request to ${endpoint}`);
-      const response = await this.httpClient.get<T>(endpoint, config);
-      return response.data;
-    } catch (error) {
-      this.logger.error(
-        `API call failed: ${error.message}`,
-        error.response?.data
-          ? JSON.stringify(error.response.data)
-          : error.stack,
-      );
-      throw error;
-    }
+    // Configura o httpService
+    this.httpService.configure(baseURL, timeout);
   }
 
   /**
@@ -88,6 +59,7 @@ export class SportMonksService {
    * Mapeia uma fixture da API para um objeto simplificado
    */
   private mapToSimpleFixture(apiFixture: ApiFixture): Fixture {
+    // Mesmo código que você já tem
     if (!apiFixture) {
       this.logger.warn('Received undefined fixture from API');
       return null;
@@ -110,6 +82,7 @@ export class SportMonksService {
    * Mapeia uma fixture da API para um objeto detalhado
    */
   private mapToDetailedFixture(apiFixture: ApiFixture): Fixture {
+    // Mesmo código que você já tem
     if (!apiFixture) {
       this.logger.warn('Received undefined fixture from API');
       return null;
@@ -160,9 +133,6 @@ export class SportMonksService {
 
   /**
    * Busca fixtures por data, lidando com paginação automaticamente
-   * @param date Data no formato YYYY-MM-DD
-   * @param includes Dados adicionais a serem incluídos
-   * @returns Todas as fixtures da data especificada
    */
   private async getFixturesByDateFromApi(
     date: string,
@@ -174,10 +144,14 @@ export class SportMonksService {
     let allData = [];
 
     while (hasMore) {
-      const response = await this.get<ApiFixtureResponse>(endpoint, {
-        include: includes,
-        page: currentPage,
-      });
+      const response = await this.httpService.get<ApiFixtureResponse>(
+        endpoint,
+        {
+          include: includes,
+          page: currentPage,
+          api_token: this.configService.get<string>('SPORTMONKS_API_TOKEN'),
+        },
+      );
 
       allData = [...allData, ...response.data];
       hasMore = response.pagination.has_more;
@@ -193,9 +167,6 @@ export class SportMonksService {
 
   /**
    * Busca múltiplos fixtures por IDs diretamente da API
-   * @param fixtureIds Array de IDs dos fixtures a serem buscados
-   * @param includes Dados adicionais a serem incluídos
-   * @returns Fixtures correspondentes aos IDs
    */
   private async getFixturesByIdsFromApi(
     fixtureIds: number[],
@@ -207,8 +178,9 @@ export class SportMonksService {
     const includesParam = includes.length ? includes.join(';') : '';
 
     try {
-      const response = await this.get<any>(endpoint, {
+      const response = await this.httpService.get<any>(endpoint, {
         include: includesParam,
+        api_token: this.configService.get<string>('SPORTMONKS_API_TOKEN'),
       });
 
       this.logger.log(`Successfully fetched fixtures by IDs`);
@@ -222,11 +194,6 @@ export class SportMonksService {
     }
   }
 
-  /**
-   * Busca fixtures por data
-   * @param date Data no formato YYYY-MM-DD
-   * @returns Lista de fixtures
-   */
   async getFixturesByDate(date: string): Promise<Fixture[]> {
     this.logger.log(`Getting fixtures for date: ${date}`);
 
@@ -248,12 +215,6 @@ export class SportMonksService {
     }
   }
 
-  /**
-   * Busca fixtures por IDs
-   * @param ids Lista de IDs de fixtures separados por vírgula
-   * @param includes Dados adicionais a serem incluídos
-   * @returns Lista de fixtures
-   */
   async getFixturesByIds(ids: string, includes?: string): Promise<Fixture[]> {
     this.logger.log(`Getting fixtures by IDs: ${ids}`);
 
