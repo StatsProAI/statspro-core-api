@@ -1,71 +1,43 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { SportMonksApiClient } from '../clients/sportmonks-api.client';
-import { ApiFixture } from '../types/api-response.types';
-import { Fixture } from '../dto/fixture.dto';
+import { Logger } from '@nestjs/common';
+import { ApiFixture, ApiFixtureResponse } from './api-response.types';
+import { Fixture } from './fixture.dto';
 
-@Injectable()
-export class FixturesRepository {
-  private readonly logger = new Logger(FixturesRepository.name);
+/**
+ * Mapeia fixtures da API SportMonks para o formato interno da aplicação
+ */
+export class FixtureMapper {
+  private static readonly logger = new Logger(FixtureMapper.name);
 
-  constructor(private readonly apiClient: SportMonksApiClient) {}
-
-  /**
-   * Busca fixtures por data
-   * @param date Data no formato YYYY-MM-DD
-   * @returns Lista de fixtures
-   */
-  async findByDate(date: string): Promise<Fixture[]> {
-    this.logger.log(`Finding fixtures for date: ${date}`);
-
-    try {
-      const response = await this.apiClient.getFixturesByDate(date);
-
-      const fixtures = response.data.map((fixture) =>
-        this.mapToSimpleFixture(fixture),
-      );
-
-      this.logger.log(`Found ${fixtures.length} fixtures for date: ${date}`);
-      return fixtures;
-    } catch (error) {
-      this.logger.error(
-        `Failed to find fixtures: ${error.message}`,
-        error.stack,
-      );
-      throw error;
-    }
-  }
 
   /**
-   * Busca fixtures por IDs
-   * @param ids Lista de IDs de fixtures
-   * @param includes Dados adicionais a serem incluídos
-   * @returns Lista de fixtures
+   * Padroniza a resposta da API para um formato consistente
    */
-  async findByIds(ids: number[], includes: string[] = []): Promise<Fixture[]> {
-    this.logger.log(`Finding fixtures with IDs: ${ids.join(', ')}`);
+  static normalizeResponse(data: any): ApiFixtureResponse {
+    const normalizedData = Array.isArray(data)
+      ? data
+      : data &&
+        typeof data === 'object' &&
+        'data' in data &&
+        Array.isArray(data.data)
+        ? data.data
+        : [data];
 
-    try {
-      const response = await this.apiClient.getFixturesByIds(ids, includes);
-
-      const fixtures = response.data.map((fixture) =>
-        this.mapToDetailedFixture(fixture),
-      );
-
-      this.logger.log(`Found ${fixtures.length} fixtures by IDs`);
-      return fixtures;
-    } catch (error) {
-      this.logger.error(
-        `Failed to find fixtures by IDs: ${error.message}`,
-        error.stack,
-      );
-      throw error;
-    }
+    return {
+      data: normalizedData,
+      pagination: {
+        count: normalizedData.length,
+        per_page: normalizedData.length,
+        current_page: 1,
+        next_page: null,
+        has_more: false,
+      },
+    };
   }
 
   /**
    * Mapeia uma fixture da API para um objeto simplificado
    */
-  private mapToSimpleFixture(apiFixture: ApiFixture): Fixture {
+  static mapToSimpleFixture(apiFixture: ApiFixture): Fixture {
     if (!apiFixture) {
       this.logger.warn('Received undefined fixture from API');
       return null;
@@ -87,7 +59,7 @@ export class FixturesRepository {
   /**
    * Mapeia uma fixture da API para um objeto detalhado
    */
-  private mapToDetailedFixture(apiFixture: ApiFixture): Fixture {
+  static mapToDetailedFixture(apiFixture: ApiFixture): Fixture {
     if (!apiFixture) {
       this.logger.warn('Received undefined fixture from API');
       return null;

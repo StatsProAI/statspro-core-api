@@ -7,7 +7,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { SportMonksService } from './sportmonks.service';
-import { Fixture } from './dto/fixture.dto';
+import { Fixture } from './fixture.dto';
 
 @ApiTags('sportmonks')
 @Controller('sportmonks')

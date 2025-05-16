@@ -16,6 +16,7 @@ import { WhatsappTwilioSessionModule } from './whatsapp-twilio-session/whatsapp-
 import { WhatsappMessageModule } from './whatsapp-message/whatsapp-message.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({

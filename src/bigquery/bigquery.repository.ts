@@ -61,7 +61,6 @@ export class BigQueryRepository<T> {
       params,
       useLegacySql: false,
     };
-
     const startTime = Date.now();
     try {
       await this.bigQuery.query(options);
@@ -69,6 +68,7 @@ export class BigQueryRepository<T> {
       this.logger.log(
         `BigQuery Insert - ${duration}ms - TraceId: ${getTraceId()} - SQL: ${sql} - Table: ${this.tableName}`,
       );
+
     } catch (error) {
       const duration = Date.now() - startTime;
       this.logger.error(
