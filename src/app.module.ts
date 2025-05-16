@@ -14,6 +14,8 @@ import { SportMonksModule } from './sportmonks/sportmonks.module';
 import { TwilioModule } from './twilio/twilio.module';
 import { WhatsappTwilioSessionModule } from './whatsapp-twilio-session/whatsapp-twilio-session.module';
 import { WhatsappMessageModule } from './whatsapp-message/whatsapp-message.module';
+import { ScheduleModule } from '@nestjs/schedule';
+
 
 @Module({
   imports: [
@@ -60,6 +62,7 @@ import { WhatsappMessageModule } from './whatsapp-message/whatsapp-message.modul
     TwilioModule,
     WhatsappTwilioSessionModule,
     WhatsappMessageModule,
+    ScheduleModule.forRoot(),
   ],
   providers: [
     ClerkClientProvider,

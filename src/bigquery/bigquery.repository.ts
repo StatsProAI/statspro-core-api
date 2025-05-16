@@ -30,15 +30,29 @@ export class BigQueryRepository<T> {
     this.datasetId = process.env.BIGQUERY_DATASET_ID;
   }
 
+  async getDataSet() {
+    return `${this.projectId}.${this.datasetId}`;
+  }
+
   async insert(entity: T): Promise<void> {
-    const sql = `INSERT INTO \`${this.projectId}.${this.datasetId}.${this.tableName}\` (${this.columns
+    const nonNullColumns = this.columns.filter(column => {
+      if (column.propertyKey === 'createdAt') return true;
+      const value = (entity as any)[column.propertyKey];
+      return value !== null && value !== undefined;
+    });
+
+    const sql = `INSERT INTO \`${this.projectId}.${this.datasetId}.${this.tableName}\` (${nonNullColumns
       .map((c) => `\`${c.columnName}\``)
-      .join(', ')}) VALUES (${this.columns
-      .map((c) => `@${c.propertyKey}`)
+      .join(', ')}) VALUES (${nonNullColumns
+      .map((c) =>
+        c.propertyKey === 'createdAt' ? 'CURRENT_TIMESTAMP()' : `@${c.propertyKey}`
+      )
       .join(', ')})`;
 
-    const params = this.columns.reduce((acc, column) => {
-      acc[column.propertyKey] = (entity as any)[column.propertyKey];
+    const params = nonNullColumns.reduce((acc, column) => {
+      if (column.propertyKey !== 'createdAt') {
+        acc[column.propertyKey] = (entity as any)[column.propertyKey];
+      }
       return acc;
     }, {});
 
@@ -49,13 +63,12 @@ export class BigQueryRepository<T> {
     };
     const startTime = Date.now();
     try {
-      console.log('BigQuery Insert - SQL:', options);
+      await this.bigQuery.query(options);
+      const duration = Date.now() - startTime;
+      this.logger.log(
+        `BigQuery Insert - ${duration}ms - TraceId: ${getTraceId()} - SQL: ${sql} - Table: ${this.tableName}`,
+      );
 
-      // await this.bigQuery.query(options);
-      // const duration = Date.now() - startTime;
-      // this.logger.log(
-      //   `BigQuery Insert - ${duration}ms - TraceId: ${getTraceId()} - SQL: ${sql} - Table: ${this.tableName}`,
-      // );
     } catch (error) {
       const duration = Date.now() - startTime;
       this.logger.error(
@@ -76,6 +89,32 @@ export class BigQueryRepository<T> {
 
     const sql = `SELECT ${fiels} FROM \`${this.projectId}.${this.datasetId}.${this.tableName}\``;
 
+    const startTime = Date.now();
+    try {
+      const [rows] = await this.bigQuery.query(sql);
+
+      const duration = Date.now() - startTime;
+
+      this.logger.log(
+        `BigQuery Query - ${duration}ms - TraceId: ${getTraceId()} - SQL: ${sql} - Table: ${this.tableName}`,
+      );
+
+      return rows.map((row) => {
+        const mappedRow = mapBigQueryRow<T>(row);
+        const entity = new this.entityClass();
+        Object.assign(entity, mappedRow);
+        return entity;
+      });
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      this.logger.error(
+        `Error executing query - ${duration}ms - TraceId: ${getTraceId()} - SQL: ${sql} - Table: ${this.tableName} - Error: ${error.stack}`,
+      );
+      throw error;
+    }
+  }
+
+  async nativeQuery(sql: string): Promise<T[]> {
     const startTime = Date.now();
     try {
       const [rows] = await this.bigQuery.query(sql);
