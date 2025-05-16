@@ -10,4 +10,14 @@ export class BigqueryService {
     const [rows] = await this.bigQuery.query(sql);
     return mapBigQueryRows<T>(rows);
   }
+
+  async runNativeQuery(query: string, options = {}): Promise<any> {
+    const [rows] = await this.bigQuery.query({
+      query,
+      useLegacySql: false,
+      ...options,
+    });
+    return rows;
+
+  }
 }

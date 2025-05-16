@@ -12,4 +12,13 @@ export class UsersService {
   async getAllUsers(): Promise<UserEntity[]> {
     return this.repository.findAll();
   }
+
+
+  async findUserBySendMessageWhatsApp() {
+    const dataSet = await this.repository.getDataSet();
+    const sql = `SELECT * FROM \`${dataSet}.user\` WHERE email in (
+      'venturi@statspro.ai'
+    )`;
+    return this.repository.nativeQuery(sql);
+  }
 }

@@ -12,7 +12,7 @@ export class TwilioService {
     try {
       await this.twilioClient.messages.create({
         from: process.env.TWILIO_WHATSAPP_NUMBER,
-        to: phoneNumber,
+        to: `whatsapp:${phoneNumber}`,
         contentSid: process.env.TWILIO_CONTENT_SID_GO_LIVE, // seu template SID
         messagingServiceSid: process.env.TWILIO_MESSAGE_SERVICE_SID,
         contentVariables: JSON.stringify({

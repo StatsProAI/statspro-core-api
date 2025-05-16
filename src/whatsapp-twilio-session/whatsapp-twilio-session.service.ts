@@ -12,7 +12,7 @@ export class WhatsappTwilioSessionService {
   async createSession(userId: string): Promise<void> {
     const session = new WhatsAppTwilioSessionEntity();
     session.userId = userId;
-    session.createdAt = new Date();
-    (session.status = 'INITIALIZED'), await this.repository.insert(session);
+    session.status = 'INITIALIZED'; 
+    await this.repository.insert(session);
   }
 }
