@@ -1,38 +1,61 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Fixture } from './dto/fixture.dto';
-import { FixturesRepository } from './repositories/fixtures.repository';
+import { Fixture } from './fixture.dto';
+import { FixtureMapper } from './fixture.mapper';
+import { SportMonksRepository } from './sportmonks.repository';
 
 @Injectable()
 export class SportMonksService {
   private readonly logger = new Logger(SportMonksService.name);
 
-  constructor(private readonly fixturesRepository: FixturesRepository) {}
+  constructor(
+    private readonly sportMonksRepository: SportMonksRepository,
+  ) {}
 
-  /**
-   * Busca fixtures por data
-   * @param date Data no formato YYYY-MM-DD
-   * @returns Lista de fixtures
-   */
   async getFixturesByDate(date: string): Promise<Fixture[]> {
     this.logger.log(`Getting fixtures for date: ${date}`);
-    return this.fixturesRepository.findByDate(date);
+
+    try {
+      const response = await this.sportMonksRepository.getFixturesByDate(date);
+      
+      const fixtures = response.data.map((fixture) =>
+        FixtureMapper.mapToSimpleFixture(fixture),
+      );
+
+      this.logger.log(`Found ${fixtures.length} fixtures for date: ${date}`);
+      return fixtures;
+    } catch (error) {
+      this.logger.error(
+        `Failed to find fixtures: ${error.message}`,
+        error.stack,
+      );
+      throw error;
+    }
   }
 
-  /**
-   * Busca fixtures por IDs
-   * @param ids Lista de IDs de fixtures separados por vírgula
-   * @param includes Dados adicionais a serem incluídos
-   * @returns Lista de fixtures
-   */
   async getFixturesByIds(ids: string, includes?: string): Promise<Fixture[]> {
     this.logger.log(`Getting fixtures by IDs: ${ids}`);
-    
-    // Converte a string de IDs em um array de números
-    const fixtureIds = ids.split(',').map(id => parseInt(id.trim(), 10));
-    
-    // Converte a string de includes para um array se existir
+
+    const fixtureIds = ids.split(',').map((id) => parseInt(id.trim(), 10));
     const includesArray = includes ? includes.split(';') : [];
-    
-    return this.fixturesRepository.findByIds(fixtureIds, includesArray);
+
+    try {
+      const response = await this.sportMonksRepository.getFixturesByIds(
+        fixtureIds,
+        includesArray,
+      );
+
+      const fixtures = response.data.map((fixture) =>
+        FixtureMapper.mapToDetailedFixture(fixture),
+      );
+
+      this.logger.log(`Found ${fixtures.length} fixtures by IDs`);
+      return fixtures;
+    } catch (error) {
+      this.logger.error(
+        `Failed to find fixtures by IDs: ${error.message}`,
+        error.stack,
+      );
+      throw error;
+    }
   }
-} 
+}

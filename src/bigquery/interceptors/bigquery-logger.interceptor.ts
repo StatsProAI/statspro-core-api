@@ -1,4 +1,10 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  NestInterceptor,
+  ExecutionContext,
+  CallHandler,
+  Logger,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { getTraceId } from '../../common/utils/trace-context';
@@ -15,15 +21,19 @@ export class BigQueryLoggerInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       tap({
-        next: (data) => {
+        next: () => {
           const duration = Date.now() - startTime;
-          this.logger.log(`[${method}] ${url} - ${duration}ms - TraceId: ${getTraceId()} - Body: ${JSON.stringify(request.body)}`);
+          this.logger.log(
+            `[${method}] ${url} - ${duration}ms - TraceId: ${getTraceId()} - Body: ${JSON.stringify(request.body)}`,
+          );
         },
         error: (error) => {
           const duration = Date.now() - startTime;
-          this.logger.error(`[${method}] ${url} - Error - ${duration}ms - TraceId: ${getTraceId()} - Body: ${JSON.stringify(request.body)} - ${error.stack}`);
+          this.logger.error(
+            `[${method}] ${url} - Error - ${duration}ms - TraceId: ${getTraceId()} - Body: ${JSON.stringify(request.body)} - ${error.stack}`,
+          );
         },
-      })
+      }),
     );
   }
-} 
+}

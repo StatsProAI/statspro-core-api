@@ -6,9 +6,7 @@ import { PassportModule } from '@nestjs/passport';
 import { ClerkStrategy } from './clerk.strategy';
 
 @Module({
-  imports: [
-    PassportModule.register({ defaultStrategy: 'clerk' }),
-  ],
+  imports: [PassportModule.register({ defaultStrategy: 'clerk' })],
   providers: [
     AuthenticationService,
     ClerkClientProvider,

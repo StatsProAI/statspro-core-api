@@ -9,4 +9,4 @@ export const asyncLocalStorage = new AsyncLocalStorage<RequestContext>();
 export function getTraceId(): string {
   const store = asyncLocalStorage.getStore();
   return store?.traceId || 'no-trace-id';
-} 
+}
