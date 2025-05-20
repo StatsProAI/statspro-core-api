@@ -38,6 +38,7 @@
     "date-fns": "^4.1.0",
     "dd-trace": "^5.52.0",
     "nestjs-pino": "^4.4.0",
+    "newrelic": "^12.19.0",
     "passport": "^0.7.0",
     "passport-custom": "^1.1.1",
     "pino-http": "^10.4.0",
