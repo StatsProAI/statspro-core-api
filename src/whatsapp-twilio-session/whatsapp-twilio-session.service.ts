@@ -15,4 +15,17 @@ export class WhatsappTwilioSessionService {
     session.status = 'INITIALIZED'; 
     await this.repository.insert(session);
   }
+
+  async getLastSessionByUserId(userId: string): Promise<WhatsAppTwilioSessionEntity> {
+    const sessions = await this.repository.findAll({
+      where: { userId },
+      orderBy: { createdAt: 'DESC' },
+      limit: 1,
+    });
+    return sessions[0] || null;
+  }
+
+  async updateSession(userId: string, data: Partial<WhatsAppTwilioSessionEntity>): Promise<void> {
+    await this.repository.update({ userId }, data);
+  }
 }
