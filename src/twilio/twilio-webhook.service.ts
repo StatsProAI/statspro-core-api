@@ -51,8 +51,6 @@ export class TwilioWebhookService {
   }
 
   async processWebhook(payload: TwilioPayloadDto) {
-    console.log('Iniciando o processamento do webhook do Twilio...', payload);
-
     const phoneNumer = twilioExtractPhoneNumber(payload.From);
     const user = await this.usersService.findUserByPhoneNumber(phoneNumer);
 
@@ -100,11 +98,11 @@ export class TwilioWebhookService {
       sessionResponse.status === WhatsAppTwilioSessionStatus.INITIALIZED
     ) {
       const diffMinutes = await differenceInMinutes(sessionResponse?.createdAt);
-      if (diffMinutes > 360) {
+      if (diffMinutes > 1) {
         await this.whatsappTwilioSessionService.updateSession(userId, {
           status: WhatsAppTwilioSessionStatus.FINALIZED,
         });
-        this.whatsappTwilioSessionService.createSession(userId);
+        await this.whatsappTwilioSessionService.createSession(userId);
         return {
           isNewSessionCreated: true,
         };
@@ -113,7 +111,7 @@ export class TwilioWebhookService {
         isNewSessionCreated: false,
       };
     } else {
-      this.whatsappTwilioSessionService.createSession(userId);
+      await this.whatsappTwilioSessionService.createSession(userId);
       return {
         isNewSessionCreated: true,
       };
