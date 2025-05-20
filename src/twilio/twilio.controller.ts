@@ -18,7 +18,6 @@ export class TwilioController {
   @Post('webhook')
   async handleWebhook(@Body() body: TwilioPayloadDto, @Res() res: Response) {
     try {
-      console.log('Iniciando o processamento do webhook do Twilio...');
       await this.twilioWebhookService.processWebhook(body);
       return res.status(200).send('Webhook recebido com sucesso');
     } catch (error) {
