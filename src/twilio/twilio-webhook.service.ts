@@ -83,7 +83,7 @@ export class TwilioWebhookService {
     if (strategy) {
       await strategy.action(user.userId, user.phoneNumber, text);
     } else {
-      await this.handleDefaultStrategy.execute(user.userId, user.phoneNumber, text);
+      await this.handleDefaultStrategy.execute(user.userId, user.phoneNumber);
     }
   }
 
