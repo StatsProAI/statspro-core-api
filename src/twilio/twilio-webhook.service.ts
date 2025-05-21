@@ -51,7 +51,6 @@ export class TwilioWebhookService {
   }
 
   async processWebhook(payload: TwilioPayloadDto) {
-
     const phoneNumer = twilioExtractPhoneNumber(payload.From);
     
     if(payload.From !== 'whatsapp:+554792714236') {
@@ -108,7 +107,7 @@ export class TwilioWebhookService {
       sessionResponse.status === WhatsAppTwilioSessionStatus.INITIALIZED
     ) {
       const diffMinutes = await differenceInMinutes(sessionResponse?.createdAt);
-      if (diffMinutes > 360) {
+      if (diffMinutes > 1) {
         await this.whatsappTwilioSessionService.updateSession(userId, {
           status: WhatsAppTwilioSessionStatus.FINALIZED,
         });

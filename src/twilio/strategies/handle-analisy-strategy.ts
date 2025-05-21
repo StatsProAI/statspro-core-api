@@ -195,6 +195,5 @@ export class HandleAnalisyStrategy {
           message: null,
         };
       }
-    }
   }
 }
