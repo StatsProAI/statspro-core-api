@@ -8,7 +8,10 @@ import { QuestionService } from '../../question/question.service';
 import { QuestionCacheEntity } from '../../bigquery/entities/QuestionCacheEntity';
 import { WhatsappTwilioSessionService } from '../../whatsapp-twilio-session/whatsapp-twilio-session.service';
 import { AuroraService } from '../../aurora/aurora.service';
-import { AURORA_ERRORS, auroraCheckStartsWith } from '../../common/utils/aurora-check-starts-with';
+import {
+  AURORA_ERRORS,
+  auroraCheckStartsWith,
+} from '../../common/utils/aurora-check-starts-with';
 
 @Injectable()
 export class HandleAnalisyStrategy {
@@ -177,9 +180,9 @@ export class HandleAnalisyStrategy {
           userId: user.userId!,
           answer: result!,
           question: gameTitle,
-          type: "analysis",
+          type: 'analysis',
           matchDate: data,
-          refSource: "whatsapp",
+          refSource: 'whatsapp',
         });
 
         await this.questionCacheService.create({
@@ -187,7 +190,7 @@ export class HandleAnalisyStrategy {
           answer: result!,
           refSource: 'whatsapp',
           userId: user.userId!,
-          gameTitle
+          gameTitle,
         });
       } else {
         return {
@@ -195,5 +198,6 @@ export class HandleAnalisyStrategy {
           message: null,
         };
       }
+    }
   }
 }
