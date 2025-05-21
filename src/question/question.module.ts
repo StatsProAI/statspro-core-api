@@ -4,7 +4,10 @@ import { BigQuery } from '@google-cloud/bigquery';
 import { BigQueryRepository } from '../bigquery/bigquery.repository';
 import { QuestionEntity } from '../bigquery/entities/QuestionEntity';
 import { ConfigService } from '@nestjs/config';
+import { QuestionsController } from './question.controller';
 @Module({
+  controllers: [QuestionsController],
+  imports: [],
   providers: [
     QuestionService,
     {
