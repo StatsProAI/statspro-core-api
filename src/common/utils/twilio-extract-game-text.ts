@@ -1,4 +1,4 @@
-export function extractGameText(text: string) {
+export function twilioExtractGameText(text: string) {
   const regex = /\*(\d+)\.\*\s([^\*]+?)\s-\s(\d{2}\/\d{2})(?:\s\d{2}:\d{2})?/g;
   const matches = Array.from(text.matchAll(regex)); // <-- aqui, usando Array.from
 
