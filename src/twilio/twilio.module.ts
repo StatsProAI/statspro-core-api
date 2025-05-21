@@ -10,9 +10,19 @@ import { HandleAnalisyStrategy } from './strategies/handle-analisy-strategy';
 import { HandleListGamesStrategy } from './strategies/handle-list-games-strategy';
 import { HandleDefaultStrategy } from './strategies/handle-default-strategy';
 import { HandleSuporteStrategy } from './strategies/handle-suport-strategy';
+import { QuestionCacheModule } from '../question-cache/question-cache.module';
+import { QuestionModule } from '../question/question.module';
+import { AuroraModule } from '../aurora/aurora.module';
 
 @Module({
-  imports: [WhatsappTwilioSessionModule, UsersModule, SportMonksModule],
+  imports: [
+    WhatsappTwilioSessionModule,
+    UsersModule,
+    SportMonksModule,
+    QuestionCacheModule,
+    QuestionModule,
+    AuroraModule,
+  ],
   controllers: [TwilioController],
   providers: [
     TwilioService,
@@ -21,7 +31,7 @@ import { HandleSuporteStrategy } from './strategies/handle-suport-strategy';
     HandleAnalisyStrategy,
     HandleListGamesStrategy,
     HandleDefaultStrategy,
-    HandleSuporteStrategy
+    HandleSuporteStrategy,
   ],
   exports: [TwilioClientProvider, TwilioService],
 })

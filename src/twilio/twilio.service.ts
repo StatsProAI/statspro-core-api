@@ -59,7 +59,7 @@ export class TwilioService {
   ) {
     const startTime = Date.now();
     try {
-      this.logger.log(`📤 Sending menu WhatsApp message to ${userName} (${phoneNumber})`);
+      this.logger.log(`📤 Sending menu WhatsApp message to ${userName} (${phoneNumber}) - ${process.env.TWILIO_CONTENT_SID_MENU}`);
       const message = await this.twilioClient.messages.create({
         from: process.env.TWILIO_WHATSAPP_NUMBER,
         to: `whatsapp:${phoneNumber}`,

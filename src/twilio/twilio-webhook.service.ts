@@ -37,21 +37,31 @@ export class TwilioWebhookService {
     this.strategies = [
       {
         match: (text) => /analise/i.test(text),
-        action: this.handleListGamesStrategy.execute,
+        action: (userId: string, from: string, text: string) => this.handleListGamesStrategy.execute(userId, from),
       },
       {
         match: (text) => /suporte/i.test(text),
-        action: this.handleSuporteStrategy.execute,
+        action: (userId: string, from: string, text: string) => this.handleSuporteStrategy.execute(userId, from),
       },
       {
         match: (text) => /^\d+$/.test(text), // Apenas números
-        action: this.handleAnalisyStrategy.execute,
+        action: (userId: string, from: string, text: string) => this.handleAnalisyStrategy.execute(userId, from, text),
       },
     ];
   }
 
   async processWebhook(payload: TwilioPayloadDto) {
+
     const phoneNumer = twilioExtractPhoneNumber(payload.From);
+    
+    if(payload.From !== 'whatsapp:+554792714236') {
+      await this.twilioService.sendTextWhatsAppMessage(
+        'Oi, tudo bem? Estamos em manutenção. Por favor, entre em contato com o suporte.',
+        phoneNumer,
+      );
+      return;
+    }
+    
     const user = await this.usersService.findUserByPhoneNumber(phoneNumer);
 
     if (!user) {
@@ -98,7 +108,7 @@ export class TwilioWebhookService {
       sessionResponse.status === WhatsAppTwilioSessionStatus.INITIALIZED
     ) {
       const diffMinutes = await differenceInMinutes(sessionResponse?.createdAt);
-      if (diffMinutes > 1) {
+      if (diffMinutes > 360) {
         await this.whatsappTwilioSessionService.updateSession(userId, {
           status: WhatsAppTwilioSessionStatus.FINALIZED,
         });

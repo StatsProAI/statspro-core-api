@@ -11,6 +11,23 @@ export class SportMonksService {
     private readonly sportMonksRepository: SportMonksRepository,
   ) {}
 
+  async getAllFixturesByDate(date: string): Promise<Fixture[]> {
+    this.logger.log(`Getting fixtures for date: ${date}`);
+
+    try {
+      const response = await this.sportMonksRepository.getFixturesByDate(date);
+      const fixtures = response.data as Fixture[];
+      this.logger.log(`Found ${fixtures.length} fixtures for date: ${date}`);
+      return fixtures;
+    } catch (error) {
+      this.logger.error(
+        `Failed to find fixtures: ${error.message}`,
+        error.stack,
+      );
+      throw error;
+    }
+  }
+
   async getFixturesByDate(date: string): Promise<Fixture[]> {
     this.logger.log(`Getting fixtures for date: ${date}`);
 
