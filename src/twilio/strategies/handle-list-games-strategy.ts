@@ -41,7 +41,6 @@ export class HandleListGamesStrategy {
       {} as Record<string, any[]>,
     );
 
-    debugger;
     this.logger.log(`Games grouped into ${Object.keys(jogosPorLiga).length} leagues`);
 
     // Agora, montar a mensagem agrupada

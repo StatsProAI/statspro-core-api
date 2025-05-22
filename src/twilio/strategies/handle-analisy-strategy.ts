@@ -35,7 +35,7 @@ export class HandleAnalisyStrategy {
     );
 
     const lastMessage = await this.twilioService.getLastMessage(from);
-    this.logger.debug(`Last message retrieved: ${lastMessage?.body}`);
+    this.logger.debug(`Last message retrieved`);
 
     const jogosDesejado = twilioExtractGameText(lastMessage?.body);
     const index = Number(text) - 1;
