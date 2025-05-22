@@ -56,7 +56,7 @@ export class TwilioWebhookService {
     if (!user) {
       await this.twilioService.sendTextWhatsAppMessage(
         DEFAULT_MESSAGES.NOT_HAVE_ACCOUNT,
-        payload.From,
+        phoneNumer,
       );
       return;
     }
