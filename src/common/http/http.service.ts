@@ -58,4 +58,31 @@ export class HttpService {
       throw error;
     }
   }
+
+  /**
+   * Executa uma chamada POST para uma API
+   * @param endpoint Endpoint a ser chamado
+   * @param data Dados a serem enviados no corpo da requisição
+   * @param params Parâmetros adicionais para a requisição
+   * @returns Resposta da API
+   */
+  async post<T>(endpoint: string, data?: any, params?: Record<string, any>): Promise<T> {
+    try {
+      const config: AxiosRequestConfig = {
+        params,
+      };
+
+      this.logger.debug(`Making API POST request to ${endpoint}`);
+      const response = await this.httpClient.post<T>(endpoint, data, config);
+      return response.data;
+    } catch (error) {
+      this.logger.error(
+        `API POST call failed: ${error.message}`,
+        error.response?.data
+          ? JSON.stringify(error.response.data)
+          : error.stack,
+      );
+      throw error;
+    }
+  }
 }

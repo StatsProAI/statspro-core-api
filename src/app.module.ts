@@ -15,6 +15,9 @@ import { TwilioModule } from './twilio/twilio.module';
 import { WhatsappTwilioSessionModule } from './whatsapp-twilio-session/whatsapp-twilio-session.module';
 import { WhatsappMessageModule } from './whatsapp-message/whatsapp-message.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { QuestionCacheModule } from './question-cache/question-cache.module';
+import { QuestionModule } from './question/question.module';
+import { AuroraModule } from './aurora/aurora.module';
 
 
 @Module({
@@ -63,6 +66,9 @@ import { ScheduleModule } from '@nestjs/schedule';
     WhatsappTwilioSessionModule,
     WhatsappMessageModule,
     ScheduleModule.forRoot(),
+    QuestionCacheModule,
+    QuestionModule,
+    AuroraModule,
   ],
   providers: [
     ClerkClientProvider,
