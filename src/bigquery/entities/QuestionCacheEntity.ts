@@ -15,8 +15,8 @@ export class QuestionCacheEntity {
   @BigQueryColumn('answer')
   answer: string;
 
-  @BigQueryColumn('game_title')
-  gameTitle: string;
+  @BigQueryColumn('game_time')
+  gameTime: string;
 
   @BigQueryColumn('ref_source')
   refSource: string;
