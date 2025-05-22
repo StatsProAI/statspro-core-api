@@ -52,17 +52,7 @@ export class TwilioWebhookService {
 
   async processWebhook(payload: TwilioPayloadDto) {
     const phoneNumer = twilioExtractPhoneNumber(payload.From);
-
-    if(payload.From !== 'whatsapp:+554792714236' && payload.From !== 'whatsapp:+554799025470') {
-      await this.twilioService.sendTextWhatsAppMessage(
-        'Oi, tudo bem? Estamos em manutenção. Por favor, entre em contato com o suporte.',
-        phoneNumer,
-      );
-      return;
-    }
-    
     const user = await this.usersService.findUserByPhoneNumber(phoneNumer);
-
     if (!user) {
       await this.twilioService.sendTextWhatsAppMessage(
         DEFAULT_MESSAGES.NOT_HAVE_ACCOUNT,
