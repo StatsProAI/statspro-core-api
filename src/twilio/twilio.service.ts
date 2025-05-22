@@ -34,7 +34,7 @@ export class TwilioService {
   async getLastMessage(from: string) {
     this.logger.log(`🔍 Fetching last message from ${from}`);
     const messages = await this.twilioClient.messages.list({
-      to: from,
+      to: `whatsapp:${from}`,
       limit: 50,
     });
     const filteredMessages = messages.filter(
