@@ -107,7 +107,7 @@ export class TwilioWebhookService {
       sessionResponse.status === WhatsAppTwilioSessionStatus.INITIALIZED
     ) {
       const diffMinutes = await differenceInMinutes(sessionResponse?.createdAt);
-      if (diffMinutes > 1) {
+      if (diffMinutes > 360) {
         await this.whatsappTwilioSessionService.updateSession(userId, {
           status: WhatsAppTwilioSessionStatus.FINALIZED,
         });
