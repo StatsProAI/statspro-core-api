@@ -9,7 +9,7 @@ import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'api-token' }),
+    PassportModule.register({ defaultStrategy: 'clerk' }),
     UsersModule,
   ],
   providers: [
