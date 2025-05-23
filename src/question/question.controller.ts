@@ -15,7 +15,7 @@ export class QuestionsController {
 
   @Get('histories')
   async getAllHistories(
-    @CurrentUser() user: UserEntity,
+    @CurrentUser() user: User,
     @Query() query: Partial<QuestionHistoryRequestDto>,
   ): Promise<QuestionHistoryDto[]> {
     console.log(user);
@@ -23,7 +23,7 @@ export class QuestionsController {
       throw new Error('User not found');
     }
     const dto: QuestionHistoryRequestDto = {
-      userId: user.userId,
+      userId: user.id,
       limit: Number(query.limit) || 100,
     };
 

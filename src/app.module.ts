@@ -75,7 +75,7 @@ import { ApiTokenAuthGuard } from './authentication/api-token-auth.guard';
     ClerkClientProvider,
     {
       provide: APP_GUARD,
-      useClass: ApiTokenAuthGuard,
+      useClass: ClerkAuthGuard,
     },
   ],
 })
