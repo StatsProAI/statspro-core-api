@@ -7,6 +7,7 @@ import {
   QuestionHistoryRequestDto,
   QuestionHistoryDto,
 } from './dto/question-history.dto';
+import { UserEntity } from '../bigquery/entities/UserEntity';
 
 @Controller('questions')
 export class QuestionsController {
@@ -17,6 +18,7 @@ export class QuestionsController {
     @CurrentUser() user: User,
     @Query() query: Partial<QuestionHistoryRequestDto>,
   ): Promise<QuestionHistoryDto[]> {
+    console.log(user);
     if (!user) {
       throw new Error('User not found');
     }
