@@ -18,6 +18,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { QuestionCacheModule } from './question-cache/question-cache.module';
 import { QuestionModule } from './question/question.module';
 import { AuroraModule } from './aurora/aurora.module';
+import { ApiTokenAuthGuard } from './authentication/api-token-auth.guard';
 
 
 @Module({
@@ -74,7 +75,7 @@ import { AuroraModule } from './aurora/aurora.module';
     ClerkClientProvider,
     {
       provide: APP_GUARD,
-      useClass: ClerkAuthGuard,
+      useClass: ApiTokenAuthGuard,
     },
   ],
 })
