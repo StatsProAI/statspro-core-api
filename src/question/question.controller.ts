@@ -7,6 +7,7 @@ import {
   QuestionHistoryRequestDto,
   QuestionHistoryDto,
 } from './dto/question-history.dto';
+import { UserEntity } from '../bigquery/entities/UserEntity';
 
 @Controller('questions')
 export class QuestionsController {
@@ -14,14 +15,15 @@ export class QuestionsController {
 
   @Get('histories')
   async getAllHistories(
-    @CurrentUser() user: User,
+    @CurrentUser() user: UserEntity,
     @Query() query: Partial<QuestionHistoryRequestDto>,
   ): Promise<QuestionHistoryDto[]> {
+    console.log(user);
     if (!user) {
       throw new Error('User not found');
     }
     const dto: QuestionHistoryRequestDto = {
-      userId: user.id,
+      userId: user.userId,
       limit: Number(query.limit) || 100,
     };
 
