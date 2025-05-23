@@ -25,7 +25,10 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
     }
     
     try {
-      const tokenPayload = await verifyToken(token, {});
+      const tokenPayload = await verifyToken(token, {
+        jwtKey: process.env.CLERK_JWT_KEY,
+        secretKey: process.env.CLERK_SECRET_KEY
+      });
       const user = await this.usersService.getUser(tokenPayload.sub);
       return user;
     } catch (error) {
