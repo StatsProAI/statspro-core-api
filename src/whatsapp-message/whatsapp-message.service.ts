@@ -107,4 +107,13 @@ Success rate: ${Math.round((successCount / totalUsers) * 100)}%
       return null;
     }
   }
+
+
+  async sendFirstMessageAfterSignUp(userId: string) {
+    const user = await this.userService.findUserById(userId);
+    await this.twilioService.sendWhatsAppMessageFirstMessageAfterSignUp(
+      user.firstName,
+      user.phoneNumber
+    );
+  }
 }

@@ -125,4 +125,27 @@ export class TwilioService {
       this.logger.error(`❌ Failed to send games list WhatsApp message to ${phoneNumber} in ${duration}ms: ${error.message}`);
     }
   }
+
+  async sendWhatsAppMessageFirstMessageAfterSignUp(
+    username: string,
+    phoneNumber: string,
+  ): Promise<void> {
+    const startTime = Date.now();
+    try {
+      this.logger.log(`📤 Sending first message after sign up WhatsApp message to ${phoneNumber}`);
+      await this.twilioClient.messages.create({
+        from: process.env.TWILIO_WHATSAPP_NUMBER,
+        to: `whatsapp:${phoneNumber}`,
+        contentSid: process.env.TWILIO_CONTENT_SID_FIRST_MESSAGE_AFTER_SIGN_UP,
+        contentVariables: JSON.stringify({
+          '1': username,
+        }),
+      });
+      const duration = Date.now() - startTime;
+      this.logger.log(`✅ first message after sign up WhatsApp message sent successfully to ${phoneNumber} in ${duration}ms`);
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      this.logger.error(`❌ Failed to send first message after sign up WhatsApp message to ${phoneNumber} in ${duration}ms: ${error.message}`);
+    }
+  }
 }
