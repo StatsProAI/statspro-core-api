@@ -1,6 +1,8 @@
-import { Controller, Get, Post, Body, Logger } from '@nestjs/common';
+import { Controller, Get, Logger, Post } from '@nestjs/common';
 import { WhatsappMessageService } from './whatsapp-message.service';
-import { Public } from '../authentication/decorators/public.decorator';
+import { CurrentUser } from '../authentication/decorators/current-user.decorator';
+import { User } from '@clerk/backend';
+
 
 @Controller('whatsapp')
 export class WhatsappMessageController {
@@ -10,9 +12,8 @@ export class WhatsappMessageController {
     private readonly whatsappMessageService: WhatsappMessageService,
   ) {}
 
-  @Get('send-first-message')
-  @Public()
-  async sendFirstMessage(): Promise<any> {
-    return this.whatsappMessageService.processGoLiveMessage();
+  @Post('send-first-message')
+  async sendFirstMessage(@CurrentUser() user: User): Promise<any> {
+    return this.whatsappMessageService.sendFirstMessageAfterSignUp(user.id);
   }
 }

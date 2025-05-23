@@ -69,7 +69,10 @@ export class TwilioWebhookService {
       isNewSessionCreated: boolean;
     } = await this.validateSession(user.userId, lastSession);
 
-    if (validateSessionResponse.isNewSessionCreated) {
+    const text: string = normalizeText(payload.Body);
+    const isAnalisy = /analise/i.test(text);
+
+    if (validateSessionResponse.isNewSessionCreated && !isAnalisy) {
       await this.twilioService.sendMenuWhatsAppMessage(
         user.firstName,
         user.phoneNumber,
@@ -77,7 +80,6 @@ export class TwilioWebhookService {
       return;
     }
 
-    const text: string = normalizeText(payload.Body);
     const strategy = this.strategies.find((s) => s.match(text));
     if (strategy) {
       await strategy.action(user.userId, user.phoneNumber, text);
