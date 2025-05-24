@@ -1,4 +1,9 @@
-import { User, verifyToken } from '@clerk/backend';
+import {
+  User,
+  verifyToken,
+  ClerkClient,
+  createClerkClient,
+} from '@clerk/backend';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
@@ -19,17 +24,20 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
 
   async validate(req: Request): Promise<User> {
     const token = req.headers.authorization?.split(' ')[1];
-
     if (!token) {
       throw new UnauthorizedException('No token provided');
     }
-    
+
     try {
-      const tokenPayload = await verifyToken(token, {
-        jwtKey: process.env.CLERK_JWT_KEY,
-        secretKey: process.env.CLERK_SECRET_KEY
-      });
-      const user = await this.usersService.getUser(tokenPayload.sub);
+      let decoded;
+      const options = { algorithms: ['RS256'] };
+      const publicKey = process.env.CLERK_PUBLIC_KEY;
+      decoded = jwt.verify(token, publicKey, options);
+      const currentTime = Math.floor(Date.now() / 1000);
+      if (decoded.exp < currentTime || decoded.nbf > currentTime) {
+        throw new Error('Token is expired or not yet valid');
+      }
+      const user = await this.usersService.getUser(decoded.sub);
       return user;
     } catch (error) {
       console.error(error);
