@@ -24,6 +24,7 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
     super();
     this.client = new JwksClient({
       jwksUri: 'https://clerk.statspro.ai/.well-known/jwks.json',
+      cache: false
     });
   }
 
@@ -42,6 +43,7 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
               if (err) {
                 callback(err, null);
               } else {
+                console.log(`header.kid ${header.kid}`);
                 const signingKey = key.getPublicKey();
                 callback(null, signingKey);
               }
