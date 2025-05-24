@@ -31,9 +31,17 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
     try {
       let decoded;
       const options = { algorithms: ['RS256'] };
-      const publicKey = process.env.CLERK_PUBLIC_KEY;
+      const publicKey = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyJS9icRvn3DstUU6jDWm
+IugXb4tjvfkwQ2YmupX1YesGxO11XFztTPhOGIPqief/D77YOUmF8nCZct2GHu30
+rRua8qCn6WldGt7cLgC5nqfEO065Ixp49bUwUSQCgrPCTFr6YjvMlj+uGCddrh+h
+fdL8bbvHGgWbYS1dE/wyLLO4f35CT0luqUwYszLTK2BRTyxL+k6elzZaPRBH+P2n
+IZiqrhGeqh+2FGnMZoXPaaEMqKUUiTMUnLqMl4ExWZrPPjIpBNaNutOaqm1gJmq4
+WFondii+kKgeRtdsHu75yW5iq8iJI7+JCAQCOmb3jxp07DiF6r+b5m/DmxK3PWxd
+ZwIDAQAB
+-----END PUBLIC KEY-----
+`;
 
-      console.log('public:', publicKey);
 
       decoded = jwt.verify(token, publicKey, options);
       const currentTime = Math.floor(Date.now() / 1000);
