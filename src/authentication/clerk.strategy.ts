@@ -33,13 +33,14 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
     if (!token) {
       throw new UnauthorizedException('No token provided');
     }
-
+    console.log(`token: ${token}`);
     try {
       const decoded: any = await new Promise((resolve, reject) => {
         jwt.verify(
           token,
           (header, callback) => {
-            this.client.getSigningKey(header.kid, (err, key) => {
+            console.log(`header: ${header}`);
+            this.client.getSigningKey("ins_2nQn0yawVX8jetZuDvby49huoK1", (err, key) => {
               if (err) {
                 callback(err, null);
               } else {
