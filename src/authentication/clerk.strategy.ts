@@ -12,14 +12,19 @@ import { Request } from 'express';
 import { ClerkUserService } from './clerk-user.service';
 
 import * as jwt from 'jsonwebtoken';
+import { JwksClient } from 'jwks-rsa';
 
 @Injectable()
 export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
+  private client;
   constructor(
     private readonly usersService: ClerkUserService,
     private readonly configService: ConfigService,
   ) {
     super();
+    this.client = new JwksClient({
+      jwksUri: 'https://clerk.statspro.ai/.well-known/jwks.json',
+    });
   }
 
   async validate(req: Request): Promise<User> {
@@ -29,27 +34,38 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
     }
 
     try {
-      let decoded;
-      const options = { algorithms: ['RS256'] };
-      const publicKey = `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyJS9icRvn3DstUU6jDWm
-IugXb4tjvfkwQ2YmupX1YesGxO11XFztTPhOGIPqief/D77YOUmF8nCZct2GHu30
-rRua8qCn6WldGt7cLgC5nqfEO065Ixp49bUwUSQCgrPCTFr6YjvMlj+uGCddrh+h
-fdL8bbvHGgWbYS1dE/wyLLO4f35CT0luqUwYszLTK2BRTyxL+k6elzZaPRBH+P2n
-IZiqrhGeqh+2FGnMZoXPaaEMqKUUiTMUnLqMl4ExWZrPPjIpBNaNutOaqm1gJmq4
-WFondii+kKgeRtdsHu75yW5iq8iJI7+JCAQCOmb3jxp07DiF6r+b5m/DmxK3PWxd
-ZwIDAQAB
------END PUBLIC KEY-----
-`;
+      const decoded: any = await new Promise((resolve, reject) => {
+        jwt.verify(
+          token,
+          (header, callback) => {
+            this.client.getSigningKey(header.kid, (err, key) => {
+              if (err) {
+                callback(err, null);
+              } else {
+                const signingKey = key.getPublicKey();
+                callback(null, signingKey);
+              }
+            });
+          },
+          { algorithms: ['RS256'] },
+          (err, decoded) => {
+            if (err) reject(err);
+            else resolve(decoded);
+          },
+        );
+      });
 
-
-      decoded = jwt.verify(token, publicKey, options);
-      const currentTime = Math.floor(Date.now() / 1000);
-      if (decoded.exp < currentTime || decoded.nbf > currentTime) {
-        throw new Error('Token is expired or not yet valid');
-      }
       const user = await this.usersService.getUser(decoded.sub);
       return user;
+
+      // let decoded;
+      // const options = { algorithms: ['RS256'] };
+      // const publicKey = process.env.CLERK_PUBLIC_KEY?.replace(/\\n/g, '\n');
+      // decoded = jwt.verify(token, publicKey, options);
+      // const currentTime = Math.floor(Date.now() / 1000);
+      // if (decoded.exp < currentTime || decoded.nbf > currentTime) {
+      //   throw new Error('Token is expired or not yet valid');
+      // }
     } catch (error) {
       console.error(error);
       throw new UnauthorizedException('Invalid token');
