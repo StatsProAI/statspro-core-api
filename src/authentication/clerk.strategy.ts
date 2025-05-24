@@ -29,6 +29,9 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
   }
 
   async validate(req: Request): Promise<User> {
+
+    console.log(`token init: ${req.headers.authorization}`);
+
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
       throw new UnauthorizedException('No token provided');
