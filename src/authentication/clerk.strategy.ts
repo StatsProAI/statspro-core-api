@@ -32,6 +32,9 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
       let decoded;
       const options = { algorithms: ['RS256'] };
       const publicKey = process.env.CLERK_PUBLIC_KEY;
+
+      console.log('public:', publicKey);
+
       decoded = jwt.verify(token, publicKey, options);
       const currentTime = Math.floor(Date.now() / 1000);
       if (decoded.exp < currentTime || decoded.nbf > currentTime) {
