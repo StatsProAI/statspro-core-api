@@ -67,7 +67,12 @@ export class HandleAnalisyStrategy {
         return;
       }
 
-      if (analisy.message.length > 1599) {
+      if (analisy.message === 'zerocredits') {
+        await this.twilioService.sendMessageWithTemplate({
+          phoneNumber: from,
+          contentSid: 'HX928beb51dc4f294c11f9303afc53393b'
+        });
+      } else if (analisy.message.length > 1599) {
         this.logger.debug(
           `Message length exceeds limit (${analisy.message.length} chars), truncating...`,
         );
@@ -119,10 +124,7 @@ export class HandleAnalisyStrategy {
       this.logger.warn(
         `Insufficient credits for user ${userId}. Current credits: ${user.credits}`,
       );
-      const msg = `
-        Você não possui créditos suficientes para fazer uma análise. \n
-        Para adquirir créditos, acesse o link: https://statspro.ai/subscribe \n
-        `;
+      const msg = `zerocredits`;
       return {
         discontCredits: false,
         message: msg,
