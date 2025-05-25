@@ -29,20 +29,19 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
   }
 
   async validate(req: Request): Promise<User> {
+    console.log(`token clerk init: ${req.headers['x-clerk-token']}`);
 
-    console.log(`token init: ${req.headers.authorization}`);
-
-    const token = req.headers.authorization?.split(' ')[1];
+    const token = req.headers['x-clerk-token'];
     if (!token) {
       throw new UnauthorizedException('No token provided');
     }
 
-    console.log(`token: ${token}`);
+    console.log(`token: ${token.toString()}`);
 
     try {
       const decoded: any = await new Promise((resolve, reject) => {
         jwt.verify(
-          token,
+          token.toString(),
           (header, callback) => {
             console.log(`header: ${JSON.stringify(header)}`);
             this.client.getSigningKey(header.kid, (err, key) => {
