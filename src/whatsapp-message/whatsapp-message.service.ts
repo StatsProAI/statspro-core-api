@@ -5,6 +5,7 @@ import { TwilioService } from '../twilio/twilio.service';
 import { BigQueryRepository } from '../bigquery/bigquery.repository';
 import { UsersService } from '../users/users.service';
 import { UserEntity } from '../bigquery/entities/UserEntity';
+import { ONLY_USER_TEST } from '../common/constants';
 
 @Injectable()
 export class WhatsappMessageService {
@@ -26,8 +27,7 @@ export class WhatsappMessageService {
   }
 
   async processGoLiveMessage() {
-    const users: UserEntity[] =
-      await this.userService.findUserBySendMessageWhatsApp();
+    const users: any[] = ONLY_USER_TEST;
     const userChunks = this.chunkArray(users, this.BATCH_SIZE);
     const totalUsers = users.length;
     let processedUsers = 0;
@@ -45,19 +45,19 @@ export class WhatsappMessageService {
 
       await Promise.all(
         chunk.map(async (user) => {
-          const { userId, firstName, phoneNumber } = user;
+          const { user_id, first_name, phone_number } = user;
           this.logger.log(
-            `[${processedUsers + 1}/${totalUsers}] Processing user ${userId} (${firstName}) with phone number ${phoneNumber}`,
+            `[${processedUsers + 1}/${totalUsers}] Processing user ${user_id} (${first_name}) with phone number ${phone_number}`,
           );
           try {
-            await this.sendMessageGoLive(userId, firstName, phoneNumber);
+            await this.sendMessageGoLive(user_id, first_name, phone_number);
             this.logger.log(
-              `[${processedUsers + 1}/${totalUsers}] Successfully processed user ${userId}`,
+              `[${processedUsers + 1}/${totalUsers}] Successfully processed user ${user_id}`,
             );
             successCount++;
           } catch (error) {
             this.logger.error(
-              `[${processedUsers + 1}/${totalUsers}] Error processing user ${userId}: ${error.message}`,
+              `[${processedUsers + 1}/${totalUsers}] Error processing user ${user_id}: ${error.message}`,
             );
             errorCount++;
           }
@@ -69,7 +69,7 @@ export class WhatsappMessageService {
         `Completed batch. Progress: ${processedUsers}/${totalUsers} users (${Math.round((processedUsers / totalUsers) * 100)}%)`,
       );
       // Add a small delay between batches to prevent rate limiting
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
     this.logger.log(`
@@ -87,8 +87,11 @@ Success rate: ${Math.round((successCount / totalUsers) * 100)}%
     phoneNumber: string,
   ): Promise<any> {
     this.logger.log(`Sending WhatsApp message to ${username} (${phoneNumber})`);
-    await this.whatsappTwilioSessionService.createSession(userId);
-    await this.twilioService.sendWhatsAppMessage(username, phoneNumber);
+    //await this.whatsappTwilioSessionService.createSession(userId);
+    await this.twilioService.sendMessageWithTemplate({
+      contentSid: 'HX9eb436d91729de31b8b5580aaa619f73',
+      phoneNumber
+    });
   }
 
   private extractPhoneNumberFromPayload(payload: any): string | null {
