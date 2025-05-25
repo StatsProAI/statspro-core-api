@@ -24,10 +24,14 @@ export class TwilioService {
         body,
       });
       const duration = Date.now() - startTime;
-      this.logger.log(`✅ WhatsApp text message sent successfully to ${phoneNumber} in ${duration}ms`);
+      this.logger.log(
+        `✅ WhatsApp text message sent successfully to ${phoneNumber} in ${duration}ms`,
+      );
     } catch (error) {
       const duration = Date.now() - startTime;
-      this.logger.error(`❌ Failed to send WhatsApp text message to ${phoneNumber} in ${duration}ms: ${error.message}`);
+      this.logger.error(
+        `❌ Failed to send WhatsApp text message to ${phoneNumber} in ${duration}ms: ${error.message}`,
+      );
     }
   }
 
@@ -53,13 +57,12 @@ export class TwilioService {
     return sortedMessages[0];
   }
 
-  async sendMenuWhatsAppMessage(
-    userName: string,
-    phoneNumber: string,
-  ) {
+  async sendMenuWhatsAppMessage(userName: string, phoneNumber: string) {
     const startTime = Date.now();
     try {
-      this.logger.log(`📤 Sending menu WhatsApp message to ${userName} (${phoneNumber})`);
+      this.logger.log(
+        `📤 Sending menu WhatsApp message to ${userName} (${phoneNumber})`,
+      );
       const message = await this.twilioClient.messages.create({
         from: process.env.TWILIO_WHATSAPP_NUMBER,
         to: `whatsapp:${phoneNumber}`,
@@ -69,12 +72,44 @@ export class TwilioService {
         }),
       });
       const duration = Date.now() - startTime;
-      this.logger.log(`✅ Menu WhatsApp message sent successfully to ${userName} (${phoneNumber}) in ${duration}ms`);
+      this.logger.log(
+        `✅ Menu WhatsApp message sent successfully to ${userName} (${phoneNumber}) in ${duration}ms`,
+      );
       return message;
     } catch (error) {
       const duration = Date.now() - startTime;
-      this.logger.error(`❌ Failed to send menu WhatsApp message to ${userName} (${phoneNumber}) in ${duration}ms: ${error.message}`);
-      throw new Error("Erro interno ao enviar mensagem twilio whatsapp");
+      this.logger.error(
+        `❌ Failed to send menu WhatsApp message to ${userName} (${phoneNumber}) in ${duration}ms: ${error.message}`,
+      );
+      throw new Error('Erro interno ao enviar mensagem twilio whatsapp');
+    }
+  }
+
+  async sendMessageWithTemplate(data: {
+    contentSid: string;
+    phoneNumber: string;
+    content?: Record<string, string>;
+  }) {
+    const startTime = Date.now();
+    try {
+      this.logger.log(
+        `📤 Sending WhatsApp message to (${data.phoneNumber}) contentSid: ${data.contentSid}`,
+      );
+      await this.twilioClient.messages.create({
+        from: process.env.TWILIO_WHATSAPP_NUMBER,
+        to: `whatsapp:${data.phoneNumber}`,
+        contentSid: data.contentSid,
+        messagingServiceSid: process.env.TWILIO_MESSAGE_SERVICE_SID,
+      });
+      const duration = Date.now() - startTime;
+      this.logger.log(
+        `✅ WhatsApp message sent successfully to (${data.phoneNumber}) contentSid: ${data.contentSid} in ${duration}ms`,
+      );
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      this.logger.error(
+        `❌ Failed to send WhatsApp message to (${data.phoneNumber}) contentSid: ${data.contentSid} in ${duration}ms: ${error.message}`,
+      );
     }
   }
 
@@ -85,7 +120,9 @@ export class TwilioService {
     const startTime = Date.now();
 
     try {
-      this.logger.log(`📤 Sending WhatsApp message to ${username} (${phoneNumber})`);
+      this.logger.log(
+        `📤 Sending WhatsApp message to ${username} (${phoneNumber})`,
+      );
       await this.twilioClient.messages.create({
         from: process.env.TWILIO_WHATSAPP_NUMBER,
         to: `whatsapp:${phoneNumber}`,
@@ -96,10 +133,14 @@ export class TwilioService {
         }),
       });
       const duration = Date.now() - startTime;
-      this.logger.log(`✅ WhatsApp message sent successfully to ${username} (${phoneNumber}) in ${duration}ms`);
+      this.logger.log(
+        `✅ WhatsApp message sent successfully to ${username} (${phoneNumber}) in ${duration}ms`,
+      );
     } catch (error) {
       const duration = Date.now() - startTime;
-      this.logger.error(`❌ Failed to send WhatsApp message to ${username} (${phoneNumber}) in ${duration}ms: ${error.message}`);
+      this.logger.error(
+        `❌ Failed to send WhatsApp message to ${username} (${phoneNumber}) in ${duration}ms: ${error.message}`,
+      );
     }
   }
 
@@ -109,7 +150,9 @@ export class TwilioService {
   ): Promise<void> {
     const startTime = Date.now();
     try {
-      this.logger.log(`📤 Sending games list WhatsApp message to ${phoneNumber}`);
+      this.logger.log(
+        `📤 Sending games list WhatsApp message to ${phoneNumber}`,
+      );
       await this.twilioClient.messages.create({
         from: process.env.TWILIO_WHATSAPP_NUMBER,
         to: `whatsapp:${phoneNumber}`,
@@ -119,10 +162,14 @@ export class TwilioService {
         }),
       });
       const duration = Date.now() - startTime;
-      this.logger.log(`✅ Games list WhatsApp message sent successfully to ${phoneNumber} in ${duration}ms`);
+      this.logger.log(
+        `✅ Games list WhatsApp message sent successfully to ${phoneNumber} in ${duration}ms`,
+      );
     } catch (error) {
       const duration = Date.now() - startTime;
-      this.logger.error(`❌ Failed to send games list WhatsApp message to ${phoneNumber} in ${duration}ms: ${error.message}`);
+      this.logger.error(
+        `❌ Failed to send games list WhatsApp message to ${phoneNumber} in ${duration}ms: ${error.message}`,
+      );
     }
   }
 
@@ -132,7 +179,9 @@ export class TwilioService {
   ): Promise<void> {
     const startTime = Date.now();
     try {
-      this.logger.log(`📤 Sending first message after sign up WhatsApp message to ${phoneNumber}`);
+      this.logger.log(
+        `📤 Sending first message after sign up WhatsApp message to ${phoneNumber}`,
+      );
       await this.twilioClient.messages.create({
         from: process.env.TWILIO_WHATSAPP_NUMBER,
         to: `whatsapp:${phoneNumber}`,
@@ -142,10 +191,14 @@ export class TwilioService {
         }),
       });
       const duration = Date.now() - startTime;
-      this.logger.log(`✅ first message after sign up WhatsApp message sent successfully to ${phoneNumber} in ${duration}ms`);
+      this.logger.log(
+        `✅ first message after sign up WhatsApp message sent successfully to ${phoneNumber} in ${duration}ms`,
+      );
     } catch (error) {
       const duration = Date.now() - startTime;
-      this.logger.error(`❌ Failed to send first message after sign up WhatsApp message to ${phoneNumber} in ${duration}ms: ${error.message}`);
+      this.logger.error(
+        `❌ Failed to send first message after sign up WhatsApp message to ${phoneNumber} in ${duration}ms: ${error.message}`,
+      );
     }
   }
 }
