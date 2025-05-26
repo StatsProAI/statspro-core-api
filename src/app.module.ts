@@ -19,6 +19,7 @@ import { QuestionCacheModule } from './question-cache/question-cache.module';
 import { QuestionModule } from './question/question.module';
 import { AuroraModule } from './aurora/aurora.module';
 import { ApiTokenAuthGuard } from './authentication/api-token-auth.guard';
+import { SitemapModule } from './sitemap/sitemap.module';
 
 
 @Module({
@@ -70,6 +71,7 @@ import { ApiTokenAuthGuard } from './authentication/api-token-auth.guard';
     QuestionCacheModule,
     QuestionModule,
     AuroraModule,
+    SitemapModule,
   ],
   providers: [
     ClerkClientProvider,
