@@ -72,7 +72,7 @@ export class HandleListGamesStrategy {
 
   async getGames() {
     this.logger.log('Fetching games from SportMonks');
-    const desiredLeagueIds = [648, 8, 564, 1122];
+    const desiredLeagueIds = [648, 8, 564, 1122, 1116];
     const allGames: any[] = [];
     let index = 1;
 
