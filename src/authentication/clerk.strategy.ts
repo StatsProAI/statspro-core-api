@@ -23,7 +23,7 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
   ) {
     super();
     this.client = new JwksClient({
-      jwksUri: 'https://clerk.statspro.ai/.well-known/jwks.json',
+      jwksUri: process.env.CLERK_JWKS_URI,
       cache: false
     });
   }
