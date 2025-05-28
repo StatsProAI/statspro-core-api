@@ -76,7 +76,9 @@ export class HandleListGamesStrategy {
     const allGames: any[] = [];
     let index = 1;
 
-    for (let i = 0; i < 5; i++) {
+    const daysToReadListGames = Number(process.env.SPORTMONKS_DAYS_LIST_GAMES) || 2;
+
+    for (let i = 0; i < daysToReadListGames; i++) {
       const date = addDays(new Date(), i); // adiciona i dias a partir de hoje
       const dateStr = format(date, 'yyyy-MM-dd'); // converte para string no formato certo
       this.logger.log(`Fetching fixtures for date: ${dateStr}`);
