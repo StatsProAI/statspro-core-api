@@ -40,6 +40,7 @@
     "dd-trace": "^5.52.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.15.1",
+    "jwks-rsa": "^3.2.0",
     "nestjs-pino": "^4.4.0",
     "newrelic": "^12.19.0",
     "passport": "^0.7.0",
