@@ -1,5 +1,5 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BigqueryModule } from './bigquery/bigquery.module';
 import { UsersModule } from './users/users.module';
 import { LoggerModule } from 'nestjs-pino';
@@ -20,7 +20,8 @@ import { QuestionModule } from './question/question.module';
 import { AuroraModule } from './aurora/aurora.module';
 import { ApiTokenAuthGuard } from './authentication/api-token-auth.guard';
 import { SitemapModule } from './sitemap/sitemap.module';
-
+import { MongoModule } from './mongo/mongo.module';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -72,6 +73,21 @@ import { SitemapModule } from './sitemap/sitemap.module';
     QuestionModule,
     AuroraModule,
     SitemapModule,
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => {
+        const user = config.get<string>('MONGO_USER');
+        const pass = config.get<string>('MONGO_PASS');
+        const host = config.get<string>('MONGO_HOST');
+        const db = config.get<string>('MONGO_DB');
+
+        return {
+          uri: `mongodb+srv://${user}:${pass}@${host}/${db}`,
+        };
+      },
+      inject: [ConfigService],
+    }),
+    MongoModule,
   ],
   providers: [
     ClerkClientProvider,
