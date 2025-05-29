@@ -194,6 +194,10 @@ export class HandleAnalisyStrategy {
           userId: user.userId!,
           gameTime: data,
         });
+        return {
+          discontCredits: true,
+          message: result
+        }
       } else {
         return {
           discontCredits: false,

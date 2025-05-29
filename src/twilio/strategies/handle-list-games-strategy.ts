@@ -101,7 +101,7 @@ export class HandleListGamesStrategy {
         fixtures?.filter(
           (game) =>
             desiredLeagueIds.includes(game.league.id) &&
-            game.starting_at_timestamp - THREE_HOURS_IN_SECONDS >
+            game.starting_at_timestamp >
               currentTimestamp,
         ) || [];
       this.logger.log(

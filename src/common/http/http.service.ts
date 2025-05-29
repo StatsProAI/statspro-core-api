@@ -70,6 +70,7 @@ export class HttpService {
     try {
       const config: AxiosRequestConfig = {
         params,
+        headers: params['headers']
       };
 
       this.logger.debug(`Making API POST request to ${endpoint}`);
