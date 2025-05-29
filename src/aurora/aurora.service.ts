@@ -29,7 +29,7 @@ export class AuroraService {
     };
 
     if (userId) {
-      headers['X-User-ID'] = userId;
+      headers['X-User-ID'] = 'user_2spLEwqKoxAcREP07GcGDrRoour';
     }
 
     try {
