@@ -7,8 +7,8 @@ import { Document } from 'mongoose';
 export class Page {
   @Prop({ required: true }) slug_url: string;
 
-  @Prop([{ page_type: { type: String, required: true } }])
-  tags: { page_type: string }[];
+  @Prop({ type: [String], required: true })
+  tags: string[];
 
   @Prop({ required: true }) meta_title: string;
   @Prop({ required: true }) meta_description: string;
@@ -21,6 +21,7 @@ export class Page {
   @Prop({ required: true }) main_event_date: Date;
   @Prop({ required: true }) page_status: string;
   @Prop({ required: true }) title: string;
+  @Prop({ required: true }) page_type: string;
 }
 
 export type PageDocument = Page & Document;
