@@ -33,7 +33,10 @@ export class AuroraService {
     }
 
     try {
-      return this.httpService.post<string>(url.toString(), {}, { headers });
+      return this.httpService.post<string>(url.toString(), {}, { 
+        headers,
+        timeout: 30000 // 30 seconds timeout
+      });
     } catch (error) {
       throw new Error(
         `HTTP error! status: ${error.response?.status} - ${error.response?.data || error.message}`,
