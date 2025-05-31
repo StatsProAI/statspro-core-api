@@ -35,9 +35,12 @@ export class AuroraService {
     try {
       return this.httpService.post<string>(url.toString(), {}, { 
         headers,
-        timeout: 30000 // 30 seconds timeout
+        timeout: 60000 // Increased to 60 seconds timeout
       });
     } catch (error) {
+      if (error.code === 'ECONNABORTED') {
+        throw new Error(`Request timeout after ${error.timeout}ms for game ${team1} vs ${team2}`);
+      }
       throw new Error(
         `HTTP error! status: ${error.response?.status} - ${error.response?.data || error.message}`,
       );

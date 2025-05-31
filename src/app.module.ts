@@ -88,6 +88,7 @@ import { MongooseModule } from '@nestjs/mongoose';
       inject: [ConfigService],
     }),
     MongoModule,
+    ScheduleModule.forRoot()
   ],
   providers: [
     ClerkClientProvider,
