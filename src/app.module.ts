@@ -22,6 +22,7 @@ import { ApiTokenAuthGuard } from './authentication/api-token-auth.guard';
 import { SitemapModule } from './sitemap/sitemap.module';
 import { MongoModule } from './mongo/mongo.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { SeoPagesModule } from './seo-pages/seo-pages.module';
 
 @Module({
   imports: [
@@ -88,6 +89,7 @@ import { MongooseModule } from '@nestjs/mongoose';
       inject: [ConfigService],
     }),
     MongoModule,
+    SeoPagesModule,
     ScheduleModule.forRoot()
   ],
   providers: [
