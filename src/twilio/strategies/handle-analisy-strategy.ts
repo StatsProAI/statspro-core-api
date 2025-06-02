@@ -138,7 +138,7 @@ export class HandleAnalisyStrategy {
 
     let questionCache: QuestionCacheEntity =
       await this.questionCacheService.findAllByQuestionAndRefSource(
-        `${jogodesejado.titulo} ${data}/${currentYear}`,
+        `${jogodesejado.titulo} - ${data}/${currentYear}`,
         'whatsapp',
       );
 
@@ -194,6 +194,10 @@ export class HandleAnalisyStrategy {
           userId: user.userId!,
           gameTime: data,
         });
+        return {
+          discontCredits: true,
+          message: result
+        }
       } else {
         return {
           discontCredits: false,

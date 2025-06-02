@@ -90,6 +90,7 @@ import { SeoPagesModule } from './seo-pages/seo-pages.module';
     }),
     MongoModule,
     SeoPagesModule,
+    ScheduleModule.forRoot()
   ],
   providers: [
     ClerkClientProvider,

@@ -69,7 +69,9 @@ export class HttpService {
   async post<T>(endpoint: string, data?: any, params?: Record<string, any>): Promise<T> {
     try {
       const config: AxiosRequestConfig = {
-        params,
+        params: params?.params,
+        headers: params?.headers,
+        timeout: params?.timeout
       };
 
       this.logger.debug(`Making API POST request to ${endpoint}`);

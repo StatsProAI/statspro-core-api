@@ -13,6 +13,7 @@ import { HandleSuporteStrategy } from './strategies/handle-suport-strategy';
 import { QuestionCacheModule } from '../question-cache/question-cache.module';
 import { QuestionModule } from '../question/question.module';
 import { AuroraModule } from '../aurora/aurora.module';
+import { TaskCreateQuestionCacheService } from './task-create-question-cache.service';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { AuroraModule } from '../aurora/aurora.module';
     HandleListGamesStrategy,
     HandleDefaultStrategy,
     HandleSuporteStrategy,
+    TaskCreateQuestionCacheService
   ],
   exports: [TwilioClientProvider, TwilioService],
 })
