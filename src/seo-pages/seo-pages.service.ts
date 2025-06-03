@@ -1,13 +1,21 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { SeoRequestDto, SeoResponseDto } from './dto/seo-page.dto';
+import {
+  SeoRequestDto,
+  SeoResponseNewsDto,
+  SeoResponseMatchDto,
+} from './dto/seo-page.dto';
 import { PageRepository } from 'src/mongo/repositories/page.repository';
+import { MatchRepository } from 'src/mongo/repositories/match.repository';
 
 @Injectable()
 export class SeoPagesService {
   private readonly logger = new Logger(SeoPagesService.name);
-  constructor(private readonly pageRepository: PageRepository) {}
+  constructor(
+    private readonly pageRepository: PageRepository,
+    private readonly matchRepository: MatchRepository,
+  ) {}
 
-  async getNewsBySlug(seoPageDto: SeoRequestDto): Promise<SeoResponseDto> {
+  async getNewsBySlug(seoPageDto: SeoRequestDto): Promise<SeoResponseNewsDto> {
     const { slug_url } = seoPageDto;
 
     this.logger.log(`Fetching SEO data for slug: ${slug_url}`);
@@ -23,7 +31,9 @@ export class SeoPagesService {
     return newsPage;
   }
 
-  async getMatchesBySlug(seoPageDto: SeoRequestDto): Promise<SeoResponseDto> {
+  async getMatchesBySlug(
+    seoPageDto: SeoRequestDto,
+  ): Promise<SeoResponseMatchDto> {
     const { slug_url } = seoPageDto;
 
     this.logger.log(`Fetching SEO data for slug: ${slug_url}`);
@@ -33,8 +43,29 @@ export class SeoPagesService {
       this.logger.warn(`No matches page found for slug: ${slug_url}`);
       throw new Error(`No matches page found for slug: ${slug_url}`);
     }
+    let associated_content = null;
+
+    if (matchesPage.associated_content_id) {
+      associated_content = await this.matchRepository.findByAssociatedContentId(
+        matchesPage.associated_content_id,
+      );
+      if (!associated_content) {
+        this.logger.warn(
+          `No associated content found for ID: ${matchesPage.associated_content_id}`,
+        );
+        throw new Error(
+          `No associated content found for ID: ${matchesPage.associated_content_id}`,
+        );
+      }
+      this.logger.log(
+        `Associated content found for ID: ${matchesPage.associated_content_id}`,
+      );
+    }
 
     this.logger.log('Returning matches response');
-    return matchesPage;
+    return {
+      ...matchesPage,
+      associated_content,
+    };
   }
 }
