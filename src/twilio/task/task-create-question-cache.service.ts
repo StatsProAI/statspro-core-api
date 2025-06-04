@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { HandleListGamesStrategy } from './strategies/handle-list-games-strategy';
+import { HandleListGamesStrategy } from '../strategies/handle-list-games-strategy';
 import { Cron } from '@nestjs/schedule';
 import { parse, subHours } from 'date-fns';
 import { toZonedTime, format } from 'date-fns-tz';
-import { QuestionCacheEntity } from '../bigquery/entities/QuestionCacheEntity';
-import { QuestionCacheService } from '../question-cache/question-cache.service';
-import { AuroraService } from '../aurora/aurora.service';
+import { QuestionCacheEntity } from '../../bigquery/entities/QuestionCacheEntity';
+import { QuestionCacheService } from '../../question-cache/question-cache.service';
+import { AuroraService } from '../../aurora/aurora.service';
 import {
   AURORA_ERRORS,
   auroraCheckStartsWith,
-} from '../common/utils/aurora-check-starts-with';
+} from '../../common/utils/aurora-check-starts-with';
 
 @Injectable()
 export class TaskCreateQuestionCacheService {
@@ -19,9 +19,33 @@ export class TaskCreateQuestionCacheService {
     private readonly auroraService: AuroraService,
   ) {}
 
-  @Cron('0 22 4 * * *')
-  async handleCron() {
-    console.log('🚀 Iniciando processamento de jogos...');
+  @Cron('0 22 1 * * *', { timeZone: 'America/Sao_Paulo' })
+  async handleCron1() {
+    await this.processTask();
+  }
+
+  @Cron('0 22 2 * * *', { timeZone: 'America/Sao_Paulo' })
+  async handleCron2() {
+    await this.processTask();
+  }
+
+  @Cron('0 22 3 * * *', { timeZone: 'America/Sao_Paulo' })
+  async handleCron3() {
+    await this.processTask();
+  }
+
+  @Cron('0 22 4 * * *', { timeZone: 'America/Sao_Paulo' })
+  async handleCro4() {
+    await this.processTask();
+  }
+
+  @Cron('0 22 5 * * *', { timeZone: 'America/Sao_Paulo' })
+  async handleCron5() {
+    await this.processTask();
+  }
+
+  async processTask() {
+    console.log('🚀 Iniciando processamento de jogos...', new Date().toISOString());
     const stats = {
       totalProcessed: 0,
       savedToCache: 0,
