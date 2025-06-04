@@ -58,21 +58,22 @@ export class UsersService {
     const dataSet = await this.repository.getDataSet();
 
     // const sql = `SELECT * FROM \`${dataSet}.user\` WHERE email in (
-    //   'venturi@statspro.ai',
-    //   'joarez@statspro.ai'
+    //   'venturi@statspro.ai'
     // )`;
     // return this.repository.nativeQuery(sql);
 
     let users = [];
 
     const sqlActived = `SELECT * FROM \`${dataSet}.view_user_and_subs_enriched\` where status = 'ativo' AND phone_number is not null`;
-    const sqlTrial = `SELECT * FROM \`${dataSet}.view_user_and_subs_enriched\` where cadastrou_em > "2025-04-15" AND ja_assinou = false`;
-    const sqlChurn = `SELECT * FROM \`${dataSet}.view_user_and_subs_enriched\` where data_de_churn > "2025-05-05" AND credits = 0`;
+    // const sqlTrial = `SELECT * FROM \`${dataSet}.view_user_and_subs_enriched\` where cadastrou_em > "2025-04-15" AND ja_assinou = false`;
+    // const sqlChurn = `SELECT * FROM \`${dataSet}.view_user_and_subs_enriched\` where data_de_churn > "2025-05-05" AND credits = 0`;
 
     const usersActived = await this.repository.nativeQuery(sqlActived);
-    const usersTrial = await this.repository.nativeQuery(sqlTrial);
-    const usersChurn = await this.repository.nativeQuery(sqlChurn);
-    users = [...usersActived, ...usersTrial, ...usersChurn];
+    // const usersTrial = await this.repository.nativeQuery(sqlTrial);
+    // const usersChurn = await this.repository.nativeQuery(sqlChurn);
+    // users = [...usersActived, ...usersTrial, ...usersChurn];
+
+    users = [...usersActived];
 
     return users;
   }
