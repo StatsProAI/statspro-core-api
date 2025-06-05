@@ -28,7 +28,7 @@ export class PageRepository {
     return this.pageModel
       .findOne({ slug_url: slug })
       .select(
-        'slug_url tags page_type meta_title meta_description title_h1 page_subtitle body_content author_name published_at last_updated_at main_event_date page_status title',
+        'slug_url tags page_type meta_title meta_description title_h1 page_subtitle body_content author_name published_at last_updated_at main_event_date page_status title associated_content_id',
       )
       .lean()
       .exec();
