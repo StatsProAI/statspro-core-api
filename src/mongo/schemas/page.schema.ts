@@ -22,6 +22,7 @@ export class Page {
   @Prop({ required: true }) page_status: string;
   @Prop({ required: true }) title: string;
   @Prop({ required: true }) page_type: string;
+  @Prop({ required: false }) associated_content_id: string;
 }
 
 export type PageDocument = Page & Document;
