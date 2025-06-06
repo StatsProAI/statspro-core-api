@@ -3,6 +3,7 @@ import {
   SeoRequestDto,
   SeoResponseNewsDto,
   SeoResponseMatchDto,
+  SeoResponseSlugNewsDto,
 } from './dto/seo-page.dto';
 import { PageRepository } from 'src/mongo/repositories/page.repository';
 import { MatchRepository } from 'src/mongo/repositories/match.repository';
@@ -67,5 +68,16 @@ export class SeoPagesService {
       ...matchesPage,
       associated_content,
     };
+  }
+
+  async getPublishedSlugs(): Promise<SeoResponseSlugNewsDto[]> {
+    this.logger.log('Fetching all published slugs');
+    const publishedPages = await this.pageRepository.findAllPublishedSlugs();
+    if (!publishedPages.length) {
+      this.logger.warn('No published slugs found');
+      return [];
+    }
+    this.logger.log(`Found ${publishedPages.length} published slugs`);
+    return publishedPages.map((page) => ({ slug_url: page.slug_url }));
   }
 }
