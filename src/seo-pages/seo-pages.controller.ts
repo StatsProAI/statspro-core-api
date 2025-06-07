@@ -4,6 +4,7 @@ import {
   SeoRequestDto,
   SeoResponseNewsDto,
   SeoResponseMatchDto,
+  SeoResponseSlugNewsDto,
 } from './dto/seo-page.dto';
 import { Public } from 'src/authentication/decorators/public.decorator';
 
@@ -23,5 +24,11 @@ export class SeoPagesController {
     @Query() query: SeoRequestDto,
   ): Promise<SeoResponseMatchDto> {
     return this.seoPagesService.getMatchesBySlug(query);
+  }
+
+  @Public()
+  @Get('news/slugs')
+  getAllNewsPublished(): Promise<SeoResponseSlugNewsDto[]> {
+    return this.seoPagesService.getPublishedSlugs();
   }
 }

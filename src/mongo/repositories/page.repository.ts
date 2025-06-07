@@ -14,19 +14,22 @@ export class PageRepository {
       : { page_type: pageType };
 
     return this.pageModel
-      .find(pageTypeFilter, {
+      .find(
+      { ...pageTypeFilter, page_status: 'published' },
+      {
         slug_url: 1,
         page_type: 1,
         last_updated_at: 1,
         _id: 0,
-      })
+      }
+      )
       .lean()
       .exec();
   }
 
   async findPageBySlug(slug: string): Promise<Page | null> {
     return this.pageModel
-      .findOne({ slug_url: slug })
+      .findOne({ slug_url: slug, page_status: 'published' })
       .select(
         'slug_url tags page_type meta_title meta_description title_h1 page_subtitle body_content author_name published_at last_updated_at main_event_date page_status title associated_content_id',
       )
@@ -38,8 +41,12 @@ export class PageRepository {
     return this.pageModel.create(data);
   }
 
-  async findAll(): Promise<Page[]> {
-    return this.pageModel.find().exec();
+  async findAllPublishedSlugs(): Promise<{ slug_url: string }[]> {
+    return this.pageModel
+      .find({ page_status: 'published' }, { slug_url: 1, _id: 0 })
+      .sort({ published_at: -1 })
+      .lean()
+      .exec();
   }
 
   async findById(id: string): Promise<Page | null> {

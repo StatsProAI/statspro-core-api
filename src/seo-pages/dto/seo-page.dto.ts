@@ -56,3 +56,7 @@ export class AssociatedMatchContentDto {
   final_score_home?: number;
   final_score_away?: number;
 }
+
+export class SeoResponseSlugNewsDto {
+  slug_url: string;
+}
