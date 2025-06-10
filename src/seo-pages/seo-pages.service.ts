@@ -78,6 +78,12 @@ export class SeoPagesService {
       return [];
     }
     this.logger.log(`Found ${publishedPages.length} published slugs`);
-    return publishedPages.map((page) => ({ slug_url: page.slug_url }));
+    return publishedPages.map((page) => ({
+      slug_url: page.slug_url,
+      title: page.title,
+      page_subtitle: page.page_subtitle,
+      published_at: page.published_at,
+      tags: page.tags || [],
+    }));
   }
 }
