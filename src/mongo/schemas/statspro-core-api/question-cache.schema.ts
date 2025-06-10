@@ -16,10 +16,13 @@ export class QuestionCache {
   created_at: Date;
 
   @Prop()
+  userId?: string;
+
+  @Prop()
   game_time?: string;
 
   @Prop({ enum: RefSource })
-  ref_resource?: RefSource;
+  ref_source?: RefSource;
 }
 
 export type QuestionCacheDocument = QuestionCache & Document;

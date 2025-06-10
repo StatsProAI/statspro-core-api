@@ -1,4 +1,4 @@
 export enum RefSource {
-  WHATSAPP = 'whatsapp',
-  SITE = 'site',
+  whatsapp = 'whatsapp',
+  site = 'site',
 }

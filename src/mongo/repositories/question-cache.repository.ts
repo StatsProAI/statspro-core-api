@@ -24,4 +24,9 @@ export class QuestionCacheRepository {
   async deleteById(id: string): Promise<any> {
     return this.questionCacheModel.findByIdAndDelete(id).exec();
   }
+
+  async findOne(where: Record<string, any>): Promise<QuestionCache | null> {
+    const result = await this.questionCacheModel.findOne(where).exec();
+    return result;
+  }
 }
