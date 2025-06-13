@@ -23,6 +23,7 @@ export class PageRepository {
         _id: 0,
       }
       )
+      .sort({ published_at: -1 })
       .lean()
       .exec();
   }
