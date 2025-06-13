@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Match, MatchDocument } from '../schemas/match.schema';
+import { Match, MatchDocument } from '../schemas/seo/match.schema';
 import { Model } from 'mongoose';
 
 @Injectable()
