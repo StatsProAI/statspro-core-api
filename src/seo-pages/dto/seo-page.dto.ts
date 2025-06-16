@@ -59,4 +59,8 @@ export class AssociatedMatchContentDto {
 
 export class SeoResponseSlugNewsDto {
   slug_url: string;
+  tags: string[];
+  title: string;
+  page_subtitle: string;
+  published_at: Date;
 }
