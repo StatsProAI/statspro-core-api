@@ -23,6 +23,7 @@ export class PageRepository {
         _id: 0,
       }
       )
+      .sort({ published_at: -1 })
       .lean()
       .exec();
   }
@@ -41,9 +42,12 @@ export class PageRepository {
     return this.pageModel.create(data);
   }
 
-  async findAllPublishedSlugs(): Promise<{ slug_url: string }[]> {
+  async findAllPublishedSlugs(): Promise<{ slug_url: string; title: string; tags: string[]; page_subtitle: string; published_at: Date }[]> {
     return this.pageModel
-      .find({ page_status: 'published' }, { slug_url: 1, _id: 0 })
+      .find(
+        { page_status: 'published' },
+        { slug_url: 1, title: 1, tags: 1, page_subtitle: 1, published_at: 1, _id: 0 }
+      )
       .sort({ published_at: -1 })
       .lean()
       .exec();
