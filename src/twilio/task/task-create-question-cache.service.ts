@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { HandleListGamesStrategy } from '../strategies/handle-list-games-strategy';
 import { Cron } from '@nestjs/schedule';
-import { parse, subHours } from 'date-fns';
-import { toZonedTime, format } from 'date-fns-tz';
-import { QuestionCacheEntity } from '../../bigquery/entities/QuestionCacheEntity';
+import { subHours } from 'date-fns';
 import { QuestionCacheService } from '../../question-cache/question-cache.service';
 import { AuroraService } from '../../aurora/aurora.service';
 import {
   AURORA_ERRORS,
   auroraCheckStartsWith,
 } from '../../common/utils/aurora-check-starts-with';
+import { RefSource } from 'src/mongo/enum/ref-source.enum';
 
 @Injectable()
 export class TaskCreateQuestionCacheService {
@@ -45,7 +44,10 @@ export class TaskCreateQuestionCacheService {
   }
 
   async processTask() {
-    console.log('🚀 Iniciando processamento de jogos...', new Date().toISOString());
+    console.log(
+      '🚀 Iniciando processamento de jogos...',
+      new Date().toISOString(),
+    );
     const stats = {
       totalProcessed: 0,
       savedToCache: 0,
@@ -73,7 +75,7 @@ export class TaskCreateQuestionCacheService {
       );
       console.log(`📅 Data do jogo: ${dateFormatted}/${currentYear}`);
 
-      let questionCache: QuestionCacheEntity =
+      const questionCache =
         await this.questionCacheService.findAllByQuestionAndRefSource(
           gameIdentifier,
           'whatsapp',
@@ -109,9 +111,10 @@ export class TaskCreateQuestionCacheService {
             await this.questionCacheService.create({
               question: gameIdentifier,
               answer: result!,
-              refSource: 'whatsapp',
+              created_at: new Date(),
+              ref_source: RefSource.whatsapp,
               userId: 'user_2spLEwqKoxAcREP07GcGDrRoour',
-              gameTime: `${dateFormatted}/${currentYear}`,
+              game_time: `${dateFormatted}/${currentYear}`,
             });
             console.log(`✅ Análise salva com sucesso!`);
             stats.savedToCache++;
