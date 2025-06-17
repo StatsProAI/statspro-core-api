@@ -9,7 +9,7 @@ import {
 @Injectable()
 export class QuestionCacheRepository {
   constructor(
-    @InjectModel(QuestionCache.name)
+    @InjectModel(QuestionCache.name, 'CoreConnection')
     private questionCacheModel: Model<QuestionCacheDocument>,
   ) {}
 

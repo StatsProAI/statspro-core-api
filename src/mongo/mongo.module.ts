@@ -18,6 +18,10 @@ import { QuestionCacheRepository } from './repositories/question-cache.repositor
       { name: Match.name, schema: MatchSchema },
       { name: QuestionCache.name, schema: QuestionCacheSchema },
     ]),
+    MongooseModule.forFeature(
+      [{ name: QuestionCache.name, schema: QuestionCacheSchema }],
+      'CoreConnection',
+    ),
   ],
   providers: [PageRepository, MatchRepository, QuestionCacheRepository],
   exports: [
