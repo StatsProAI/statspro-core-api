@@ -4,8 +4,13 @@ import { BigQuery } from '@google-cloud/bigquery';
 import { QuestionCacheEntity } from '../bigquery/entities/QuestionCacheEntity';
 import { BigQueryRepository } from '../bigquery/bigquery.repository';
 import { ConfigService } from '@nestjs/config';
+import { QuestionCacheController } from './question-cache.controller';
+import { MongoModule } from 'src/mongo/mongo.module';
 
 @Module({
+  imports: [
+    MongoModule,
+  ],
   providers: [
     QuestionCacheService,
     {
@@ -20,5 +25,6 @@ import { ConfigService } from '@nestjs/config';
     },
   ],
   exports: [QuestionCacheService, 'QuestionCacheRepository'],
+  controllers: [QuestionCacheController],
 })
 export class QuestionCacheModule {}
