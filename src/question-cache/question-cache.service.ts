@@ -38,7 +38,59 @@ export class QuestionCacheService {
   }
 
   async findAllByQuestion(question: string): Promise<QuestionCache> {
-    console.log(question, 'question aqui')
     return this.questionCacheRepository.findOne({ question });
+  }
+
+  // new
+  async getQuestionCacheWithRefSourceWhatsApp(
+    question: string,
+  ): Promise<QuestionCache | null> {
+    return this.questionCacheRepository.getQuestionCacheWithRefSourceWhatsApp(
+      question,
+    );
+  }
+
+  async getQuestionCache(question: string): Promise<QuestionCache | null> {
+    return this.questionCacheRepository.getQuestionCache(question);
+  }
+
+  async getQuestionsCacheByIdAndDate(
+    userId: string,
+    gameTime: string,
+  ): Promise<QuestionCache[]> {
+    return this.questionCacheRepository.getQuestionsCacheByIdAndDate(
+      userId,
+      gameTime,
+    );
+  }
+
+  async registerQuestionCacheWithRefSource(
+    userId: string,
+    question: string,
+    answer: string,
+    gameTime: string,
+    refSource: string,
+  ): Promise<{ success: boolean }> {
+    return this.questionCacheRepository.registerQuestionCacheWithRefSource(
+      userId,
+      question,
+      answer,
+      gameTime,
+      refSource,
+    );
+  }
+
+  async registerQuestionCache(
+    userId: string,
+    question: string,
+    answer: string,
+    gameTime: string,
+  ): Promise<{ success: boolean }> {
+    return this.questionCacheRepository.registerQuestionCache(
+      userId,
+      question,
+      answer,
+      gameTime,
+    );
   }
 }
