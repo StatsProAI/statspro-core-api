@@ -26,7 +26,7 @@ export class WhatsappMessageService {
     return chunks;
   }
 
-  @Cron('0 8 * * 3,5,6,0', { timeZone: 'America/Sao_Paulo' })
+  @Cron('0 8 * * 5', { timeZone: 'America/Sao_Paulo' })
   async handleCron() {
     await this.processGoLiveMessage();
   }
