@@ -12,6 +12,8 @@ import {
   AURORA_ERRORS,
   auroraCheckStartsWith,
 } from '../../common/utils/aurora-check-starts-with';
+import { QuestionCache } from 'src/mongo/schemas/statspro-core-api/question-cache.schema';
+import { RefSource } from 'src/mongo/enum/ref-source.enum';
 
 @Injectable()
 export class HandleAnalisyStrategy {
@@ -136,7 +138,7 @@ export class HandleAnalisyStrategy {
     const gameTitle = `${jogodesejado.titulo} - ${data}/${currentYear}`;
     this.logger.debug(`Searching for question with title: ${gameTitle}`);
 
-    let questionCache: QuestionCacheEntity =
+    const questionCache: QuestionCache =
       await this.questionCacheService.findAllByQuestionAndRefSource(
         `${jogodesejado.titulo} - ${data}/${currentYear}`,
         'whatsapp',
@@ -190,9 +192,10 @@ export class HandleAnalisyStrategy {
         await this.questionCacheService.create({
           question: gameTitle,
           answer: result!,
-          refSource: 'whatsapp',
+          ref_source: RefSource.whatsapp,
           userId: user.userId!,
-          gameTime: data,
+          game_time: data,
+          created_at: new Date(),
         });
         return {
           discontCredits: true,

@@ -18,7 +18,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { QuestionCacheModule } from './question-cache/question-cache.module';
 import { QuestionModule } from './question/question.module';
 import { AuroraModule } from './aurora/aurora.module';
-import { ApiTokenAuthGuard } from './authentication/api-token-auth.guard';
 import { SitemapModule } from './sitemap/sitemap.module';
 import { MongoModule } from './mongo/mongo.module';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -90,7 +89,22 @@ import { SeoPagesModule } from './seo-pages/seo-pages.module';
     }),
     MongoModule,
     SeoPagesModule,
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => {
+        const user = config.get<string>('MONGO_USER');
+        const pass = config.get<string>('MONGO_PASS');
+        const host = config.get<string>('MONGO_HOST');
+        const db = config.get<string>('MONGO_CORE_DB');
+
+        return {
+          uri: `mongodb+srv://${user}:${pass}@${host}/${db}`,
+        };
+      },
+      inject: [ConfigService],
+      connectionName: 'CoreConnection',
+    }),
   ],
   providers: [
     ClerkClientProvider,
