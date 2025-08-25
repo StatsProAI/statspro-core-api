@@ -28,6 +28,7 @@ export class AuroraService {
       'Content-Type': 'application/json',
     };
 
+    // Só envia o header X-User-ID se userId não for null (usuários cadastrados)
     if (userId) {
       headers['X-User-ID'] = userId;
     }
@@ -35,7 +36,7 @@ export class AuroraService {
     try {
       return this.httpService.post<string>(url.toString(), {}, { 
         headers,
-        timeout: 60000 // Increased to 60 seconds timeout
+        timeout: 90000, // Increased to 90 seconds timeout
       });
     } catch (error) {
       if (error.code === 'ECONNABORTED') {

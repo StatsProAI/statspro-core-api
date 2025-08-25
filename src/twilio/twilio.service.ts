@@ -14,24 +14,45 @@ export class TwilioService {
     private readonly usersService: UsersService,
   ) {}
 
-  async sendTextWhatsAppMessage(body: any, phoneNumber: string) {
+  async sendTextWhatsAppMessage(
+    message: string,
+    phoneNumber: string,
+  ): Promise<void> {
     const startTime = Date.now();
+
     try {
-      this.logger.log(`📤 Sending WhatsApp text message to ${phoneNumber}`);
+      this.logger.log(
+        `📤 ===== ENVIANDO MENSAGEM WHATSAPP =====`,
+      );
+      this.logger.log(
+        `📱 Para: ${phoneNumber}`,
+      );
+      this.logger.log(
+        `📝 Mensagem (${message.length} caracteres): "${message.substring(0, 100)}${message.length > 100 ? '...' : ''}"`,
+      );
+
       await this.twilioClient.messages.create({
         from: process.env.TWILIO_WHATSAPP_NUMBER,
         to: `whatsapp:${phoneNumber}`,
-        body,
+        body: message,
       });
+
       const duration = Date.now() - startTime;
       this.logger.log(
         `✅ WhatsApp text message sent successfully to ${phoneNumber} in ${duration}ms`,
+      );
+      this.logger.log(
+        `📤 ===== MENSAGEM ENVIADA COM SUCESSO =====`,
       );
     } catch (error) {
       const duration = Date.now() - startTime;
       this.logger.error(
         `❌ Failed to send WhatsApp text message to ${phoneNumber} in ${duration}ms: ${error.message}`,
       );
+      this.logger.error(
+        `📤 ===== ERRO AO ENVIAR MENSAGEM =====`,
+      );
+      throw new Error('Erro interno ao enviar mensagem twilio whatsapp');
     }
   }
 
