@@ -30,72 +30,79 @@ export class HandleAnalisyStrategy {
   }
 
   async execute(userId: string, from: string, text: string) {
-    this.logger.debug(
-      `Executing analysis strategy for user ${userId} from ${from}`,
-    );
+    this.logger.log(`📊 ===== INICIANDO ANÁLISE PARA USUÁRIO CADASTRADO =====`);
+    this.logger.log(`👤 User ID: ${userId} | Phone: ${from} | Text: "${text}"`);
 
-    const lastMessage = await this.twilioService.getLastMessage(from);
-    this.logger.debug(`Last message retrieved`);
+    try {
+      this.logger.log(`🔍 Buscando última mensagem para obter lista de jogos...`);
+      const lastMessage = await this.twilioService.getLastMessage(from);
+      this.logger.log(`📋 Última mensagem encontrada: "${lastMessage?.body?.substring(0, 100) || 'N/A'}..."`);
 
-    const jogosDesejado = twilioExtractGameText(lastMessage?.body);
-    const index = Number(text) - 1;
+      const jogosDesejado = twilioExtractGameText(lastMessage?.body);
+      const index = Number(text) - 1;
 
-    this.logger.debug(
-      `Selected game index: ${index}, Total games available: ${jogosDesejado.length}`,
-    );
+      this.logger.log(`🎮 Jogos extraídos: ${jogosDesejado.length} jogos`);
+      this.logger.log(`📊 Índice selecionado: ${index} (número: ${text})`);
 
-    if (index >= 0 && index < jogosDesejado.length) {
-      const jogoDesejado = jogosDesejado[index];
-      this.logger.debug(
-        `Processing analysis for game: ${JSON.stringify(jogoDesejado)}`,
-      );
+      if (index >= 0 && index < jogosDesejado.length) {
+        const jogoDesejado = jogosDesejado[index];
+        this.logger.log(`⚽ Jogo selecionado: ${JSON.stringify(jogoDesejado)}`);
 
-      const analisy: {
-        discontCredits: boolean;
-        message: string | null;
-        userId?: string;
-      } = await this.getQuestion(jogoDesejado, userId);
+        this.logger.log(`📡 Iniciando análise...`);
+        const analisy: {
+          discontCredits: boolean;
+          message: string | null;
+          userId?: string;
+        } = await this.getQuestion(jogoDesejado, userId);
+        this.logger.log(`📊 Resultado da análise: ${analisy.message ? 'SUCCESS' : 'NULL'}`);
 
-      if (analisy.message === null) {
-        this.logger.warn(
-          `No analysis found for game: ${JSON.stringify(jogoDesejado)}`,
-        );
-        await this.twilioService.sendTextWhatsAppMessage(
-          'Desculpe, não consegui encontrar a análise desejada.',
-          from,
-        );
-        return;
-      }
+        if (analisy.message === null) {
+          this.logger.log(`❌ Análise retornou null, enviando mensagem de erro`);
+          await this.twilioService.sendTextWhatsAppMessage(
+            'Desculpe, não consegui encontrar a análise desejada.',
+            from,
+          );
+          return;
+        }
 
-      if (analisy.message === 'zerocredits') {
-        await this.twilioService.sendMessageWithTemplate({
-          phoneNumber: from,
-          contentSid: 'HX928beb51dc4f294c11f9303afc53393b'
+        if (analisy.message === 'zerocredits') {
+          this.logger.log(`💰 Usuário sem créditos, enviando template de zero créditos`);
+          await this.twilioService.sendMessageWithTemplate({
+            phoneNumber: from,
+            contentSid: 'HX928beb51dc4f294c11f9303afc53393b',
+          });
+        } else if (analisy.message.length > 1599) {
+          this.logger.log(`📝 Mensagem muito longa (${analisy.message.length} chars), truncando...`);
+          const textSplited = analisy.message.slice(0, 1599 - 3) + '...';
+          await this.twilioService.sendTextWhatsAppMessage(textSplited, from);
+          this.logger.log(`✅ Análise truncada enviada`);
+        } else {
+          this.logger.log(`📏 Tamanho da análise: ${analisy.message.length} caracteres`);
+          await this.twilioService.sendTextWhatsAppMessage(analisy.message, from);
+          this.logger.log(`✅ Análise enviada com sucesso`);
+        }
+
+        this.logger.log(`📋 Atualizando sessão para ANALYSIS...`);
+        await this.whatsappTwilioSessionService.updateSession(userId, {
+          status: 'ANALYSIS',
         });
-      } else if (analisy.message.length > 1599) {
-        this.logger.debug(
-          `Message length exceeds limit (${analisy.message.length} chars), truncating...`,
-        );
-        const textSplited = analisy.message.slice(0, 1599 - 3) + '...';
-        await this.twilioService.sendTextWhatsAppMessage(textSplited, from);
-      } else {
-        await this.twilioService.sendTextWhatsAppMessage(analisy.message, from);
-      }
+        this.logger.log(`✅ Sessão atualizada para ANALYSIS`);
 
-      this.logger.debug(
-        `Updating session status to ANALYSIS for user ${userId}`,
-      );
-      await this.whatsappTwilioSessionService.updateSession(userId, {
-        status: 'ANALYSIS',
-      });
-      if (analisy.discontCredits) {
-        await this.usersService.updateCredits(userId, 2);
+        if (analisy.discontCredits) {
+          this.logger.log(`💰 Descontando 2 créditos do usuário...`);
+          await this.usersService.updateCredits(userId, 2);
+          this.logger.log(`✅ Créditos descontados`);
+        }
+
+        this.logger.log(`📊 ===== ANÁLISE PARA USUÁRIO CADASTRADO FINALIZADA =====`);
+      } else {
+        this.logger.log(`❌ Índice inválido (${index}), executando estratégia padrão`);
+        this.handleDefaultStrategy.execute(userId, from);
       }
-    } else {
-      this.logger.warn(
-        `Invalid game index ${index} selected, falling back to default strategy`,
-      );
-      this.handleDefaultStrategy.execute(userId, from);
+    } catch (error) {
+      this.logger.error(`❌ Erro na análise: ${error.message}`);
+      this.logger.log(`📊 ===== ERRO NA ANÁLISE =====`);
+      throw error;
     }
   }
 

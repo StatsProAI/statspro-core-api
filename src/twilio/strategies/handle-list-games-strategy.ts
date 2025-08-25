@@ -14,13 +14,23 @@ export class HandleListGamesStrategy {
   ) {}
 
   async execute(userId: string, from: string) {
-    this.logger.log(
-      `Starting list games execution for user ${userId} from ${from}`,
-    );
-    const message = await this.builderGamesMessage();
-    this.logger.log(`Sending WhatsApp message to ${from}`);
-    await this.twilioService.sendWhatsAppMessageListGames(message, from);
-    this.logger.log('Message sent successfully');
+    this.logger.log(`🎮 ===== INICIANDO LISTAGEM DE JOGOS =====`);
+    this.logger.log(`👤 User ID: ${userId || 'GUEST'} | Phone: ${from}`);
+
+    try {
+      this.logger.log(`📡 Buscando jogos disponíveis...`);
+      const message = await this.builderGamesMessage();
+      this.logger.log(`📏 Mensagem formatada: ${message.length} caracteres`);
+
+      this.logger.log(`📤 Enviando lista de jogos...`);
+      await this.twilioService.sendWhatsAppMessageListGames(message, from);
+      this.logger.log(`✅ Lista de jogos enviada com sucesso`);
+      this.logger.log(`🎮 ===== LISTAGEM DE JOGOS FINALIZADA =====`);
+    } catch (error) {
+      this.logger.error(`❌ Erro ao listar jogos: ${error.message}`);
+      this.logger.log(`🎮 ===== ERRO NA LISTAGEM DE JOGOS =====`);
+      throw error;
+    }
   }
 
   async builderGamesMessage() {

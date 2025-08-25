@@ -10,9 +10,11 @@ import { HandleAnalisyStrategy } from './strategies/handle-analisy-strategy';
 import { HandleListGamesStrategy } from './strategies/handle-list-games-strategy';
 import { HandleDefaultStrategy } from './strategies/handle-default-strategy';
 import { HandleSuporteStrategy } from './strategies/handle-suport-strategy';
+import { HandleGuestStrategy } from './strategies/handle-guest-strategy';
 import { QuestionCacheModule } from '../question-cache/question-cache.module';
 import { QuestionModule } from '../question/question.module';
 import { AuroraModule } from '../aurora/aurora.module';
+import { PreUsersModule } from '../pre-users/pre-users.module';
 import { TaskCreateQuestionCacheService } from './task/task-create-question-cache.service';
 
 @Module({
@@ -23,6 +25,7 @@ import { TaskCreateQuestionCacheService } from './task/task-create-question-cach
     QuestionCacheModule,
     QuestionModule,
     AuroraModule,
+    PreUsersModule,
   ],
   controllers: [TwilioController],
   providers: [
@@ -33,7 +36,8 @@ import { TaskCreateQuestionCacheService } from './task/task-create-question-cach
     HandleListGamesStrategy,
     HandleDefaultStrategy,
     HandleSuporteStrategy,
-    TaskCreateQuestionCacheService
+    HandleGuestStrategy,
+    TaskCreateQuestionCacheService,
   ],
   exports: [TwilioClientProvider, TwilioService],
 })
