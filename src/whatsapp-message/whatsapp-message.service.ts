@@ -26,10 +26,10 @@ export class WhatsappMessageService {
     return chunks;
   }
 
-  @Cron('0 8 * * 5', { timeZone: 'America/Sao_Paulo' })
-  async handleCron() {
-    await this.processGoLiveMessage();
-  }
+  // @Cron('0 8 * * 5', { timeZone: 'America/Sao_Paulo' })
+  // async handleCron() {
+  //   await this.processGoLiveMessage();
+  // }
 
   async processGoLiveMessage() {
     const users: UserEntity[] = await this.userService.findUserBySendMessageWhatsApp();
